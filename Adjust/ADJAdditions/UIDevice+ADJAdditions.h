@@ -6,12 +6,14 @@
 //  Copyright © 2012-2018 Adjust GmbH. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "ADJDeviceInfo.h"
 #import "ADJActivityHandler.h"
 
 @interface UIDevice(ADJAdditions)
 
+- (int)adjATTStatus;
 - (BOOL)adjTrackingEnabled;
 - (NSString *)adjIdForAdvertisers;
 - (NSString *)adjFbAnonymousId;
@@ -19,6 +21,9 @@
 - (NSString *)adjDeviceName;
 - (NSString *)adjCreateUuid;
 - (NSString *)adjVendorId;
-- (void)adjSetIad:(ADJActivityHandler *)activityHandler
-      triesV3Left:(int)triesV3Left;
+- (NSString *)adjDeviceId:(ADJDeviceInfo *)deviceInfo;
+- (void)adjCheckForiAd:(ADJActivityHandler *)activityHandler queue:(dispatch_queue_t)queue;
+
+- (void)requestTrackingAuthorizationWithCompletionHandler:(void (^)(NSUInteger status))completion;
+
 @end

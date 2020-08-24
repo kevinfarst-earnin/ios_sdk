@@ -39,9 +39,11 @@ typedef NS_ENUM(int, ADJTrackingState) {
 
 @property (nonatomic, copy) ADJAttribution *attribution;
 
-- (id)init;
+@property (nonatomic, copy) NSDictionary *sendingParameters;
 
-+ (ADJResponseData *)responseData;
+@property (nonatomic, strong) ADJActivityPackage *sdkClickPackage;
+
+@property (nonatomic, strong) ADJActivityPackage *sdkPackage;
 
 + (id)buildResponseData:(ADJActivityPackage *)activityPackage;
 
@@ -68,9 +70,8 @@ typedef NS_ENUM(int, ADJTrackingState) {
 
 - (ADJEventFailure *)failureResponseData;
 
-- (id)initWithActivityPackage:(ADJActivityPackage *)activityPackage;
-
-+ (ADJResponseData *)responseDataWithActivityPackage:(ADJActivityPackage *)activityPackage;
+- (id)initWithEventToken:(NSString *)eventToken
+              callbackId:(NSString *)callbackId;
 
 @end
 

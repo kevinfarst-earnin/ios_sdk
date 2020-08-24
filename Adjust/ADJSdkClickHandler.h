@@ -9,21 +9,18 @@
 #import <Foundation/Foundation.h>
 #import "ADJActivityPackage.h"
 #import "ADJActivityHandler.h"
+#import "ADJRequestHandler.h"
+#import "ADJUrlStrategy.h"
 
-@protocol ADJSdkClickHandler
+@interface ADJSdkClickHandler : NSObject <ADJResponseCallback>
 
 - (id)initWithActivityHandler:(id<ADJActivityHandler>)activityHandler
-                startsSending:(BOOL)startsSending;
+                startsSending:(BOOL)startsSending
+                    userAgent:(NSString *)userAgent
+                  urlStrategy:(ADJUrlStrategy *)urlStrategy;
 - (void)pauseSending;
 - (void)resumeSending;
 - (void)sendSdkClick:(ADJActivityPackage *)sdkClickPackage;
 - (void)teardown;
-
-@end
-
-@interface ADJSdkClickHandler : NSObject <ADJSdkClickHandler>
-
-+ (id<ADJSdkClickHandler>)handlerWithActivityHandler:(id<ADJActivityHandler>)activityHandler
-                                       startsSending:(BOOL)startsSending;
 
 @end

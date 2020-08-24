@@ -1,3 +1,70 @@
+### Version 4.23.0 (19th August 2020)
+#### Added
+- Added communication with SKAdNetwork framework by default on iOS 14.
+- Added method `deactivateSKAdNetworkHandling` to `ADJConfig` to switch off default communication with SKAdNetwork framework.
+- Added wrapper method `requestTrackingAuthorizationWithCompletionHandler:` to `Adjust` to allow immediate propagation of user's choice to backend.
+- Added handling of new iAd framework error codes introduced in iOS 14.
+- Added sending of value of user's consent to be tracked with each package.
+- Added `setUrlStrategy:` method in `ADJConfig` class to allow selection of URL strategy for specific market.
+
+⚠️ **Note**: iOS 14 beta versions prior to 5 appear to have an issue when trying to use iAd framework API like described in [here](https://github.com/adjust/ios_sdk/issues/452). For testing of v4.23.0 version of SDK, please make sure you're using **iOS 14 beta 5 or later**.
+
+---
+
+### Version 4.22.2 (24th July 2020)
+#### Added
+- Added collection iAd framework communication errors metrics.
+
+---
+
+### Version 4.22.1 (5th June 2020)
+#### Fixed
+- Fixed `copyWithZone:` method implementation in `ADJSubscription.m` (thanks to @atilimcetin).
+
+---
+
+### Version 4.22.0 (29th May 2020)
+#### Added
+- Added subscription tracking feature.
+
+### Changed
+- Refactored networking part and moved it to request handler.
+- Added additional synchronisation in various cases of access to package queue and activity state.
+
+---
+
+### Version 4.21.3 (22nd April 2020)
+#### Changed
+- Added copying of each injected mutable property of `ADJEvent` class.
+- Synchronised access to callback/partner parameters in `ADJEvent` class.
+- Synchronised access to public API methods in `Adjust` class.
+
+#### Fixed
+- Removed iAd timer.
+- Removed activity package mutation scenarios after package has been created.
+
+---
+
+### Version 4.21.2 (15th April 2020)
+#### Fixed
+- Added check for timer source and block existence prior to starting it.
+
+---
+
+### Version 4.21.1 (9th April 2020)
+#### Added
+- Added support for Mac Catalyst (thanks to @rjchatfield).
+
+#### Changed
+- Replaced `available` attribute with a macro for non native SDKs compatibility.
+- Synchronised writing to package queue.
+- Updated communication flow with `iAd.framework`.
+
+#### Fixed
+- Added nullability check for path being written onto (thanks to @sidepelican).
+
+---
+
 ### Version 4.21.0 (19th March 2020)
 #### Added
 - Added support for signature library as a plugin.

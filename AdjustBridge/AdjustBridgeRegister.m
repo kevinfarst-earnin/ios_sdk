@@ -221,7 +221,7 @@ static NSString * fbAppIdStatic = nil;
                 if (this.sdkPrefix) {
                     return this.sdkPrefix;
                 } else {
-                    return 'web-bridge4.21.0';
+                    return 'web-bridge4.23.0';
                 }
             },
             setTestOptions: function(testOptions) {
@@ -290,6 +290,8 @@ static NSString * fbAppIdStatic = nil;
             this.delayStart = null;
             this.userAgent = null;
             this.isDeviceKnown = null;
+            this.allowiAdInfoReading = null;
+            this.allowIdfaReading = null;
             this.secretId = null;
             this.info1 = null;
             this.info2 = null;
@@ -304,6 +306,7 @@ static NSString * fbAppIdStatic = nil;
             this.sessionSuccessCallback = null;
             this.sessionFailureCallback = null;
             this.deferredDeeplinkCallback = null;
+            this.urlStrategy = null;
         };
 
         AdjustConfig.EnvironmentSandbox = 'sandbox';
@@ -316,6 +319,9 @@ static NSString * fbAppIdStatic = nil;
         AdjustConfig.LogLevelError = 'ERROR';
         AdjustConfig.LogLevelAssert = 'ASSERT';
         AdjustConfig.LogLevelSuppress = 'SUPPRESS';
+
+        AdjustConfig.UrlStrategyIndia = 'UrlStrategyIndia';
+        AdjustConfig.UrlStrategyChina = 'UrlStrategyChina';
 
         AdjustConfig.prototype.registerCallbackHandlers = function() {
             var registerCallbackHandler = function(callbackName) {
@@ -364,6 +370,12 @@ static NSString * fbAppIdStatic = nil;
         AdjustConfig.prototype.setIsDeviceKnown = function(isDeviceKnown) {
             this.isDeviceKnown = isDeviceKnown;
         };
+        AdjustConfig.prototype.setAllowiAdInfoReading = function(allowiAdInfoReading) {
+            this.allowiAdInfoReading = allowiAdInfoReading;
+        };
+        AdjustConfig.prototype.setAllowIdfaReading = function(allowIdfaReading) {
+            this.allowIdfaReading = allowIdfaReading;
+        };
         AdjustConfig.prototype.setAppSecret = function(secretId, info1, info2, info3, info4) {
             this.secretId = secretId;
             this.info1 = info1;
@@ -398,6 +410,9 @@ static NSString * fbAppIdStatic = nil;
         AdjustConfig.prototype.addFbPixelMapping = function(fbEventNameKey, adjEventTokenValue) {
             this.fbPixelMapping.push(fbEventNameKey);
             this.fbPixelMapping.push(adjEventTokenValue);
+        };
+        AdjustConfig.prototype.setUrlStrategy = function(urlStrategy) {
+            this.urlStrategy = urlStrategy;
         };
 
     })();); // END preprocessorJSCode

@@ -44,16 +44,19 @@
 @property (nonatomic, copy) NSData *deviceTokenData;
 @property (nonatomic, copy) NSNumber *enabled;
 @property (nonatomic, assign) BOOL offline;
-@property (nonatomic, copy) NSString *basePath;
-@property (nonatomic, copy) NSString *gdprPath;
+@property (nonatomic, copy) NSString *extraPath;
 
 - (id)init;
 
 @end
 
+@class ADJTrackingStatusManager;
+
 @protocol ADJActivityHandler <NSObject>
 
 @property (nonatomic, copy) ADJAttribution *attribution;
+@property (nonatomic, strong) ADJTrackingStatusManager *trackingStatusManager;
+
 - (NSString *)adid;
 
 - (id)initWithConfig:(ADJConfig *)adjustConfig
@@ -82,8 +85,7 @@
 
 - (BOOL)updateAttributionI:(id<ADJActivityHandler>)selfI attribution:(ADJAttribution *)attribution;
 - (void)setAttributionDetails:(NSDictionary *)attributionDetails
-                        error:(NSError *)error
-                  retriesLeft:(int)retriesLeft;
+                        error:(NSError *)error;
 
 - (void)setOfflineMode:(BOOL)offline;
 - (void)sendFirstPackages;
@@ -98,8 +100,8 @@
 - (void)resetSessionPartnerParameters;
 - (void)trackAdRevenue:(NSString *)soruce payload:(NSData *)payload;
 - (void)disableThirdPartySharing;
-- (NSString *)getBasePath;
-- (NSString *)getGdprPath;
+- (void)trackSubscription:(ADJSubscription *)subscription;
+- (void)updateAttStatusFromUserCallback:(int)newAttStatusFromUser;
 
 - (ADJDeviceInfo *)deviceInfo;
 - (ADJActivityState *)activityState;
@@ -112,8 +114,8 @@
 
 @interface ADJActivityHandler : NSObject <ADJActivityHandler>
 
-+ (id<ADJActivityHandler>)handlerWithConfig:(ADJConfig *)adjustConfig
-                             savedPreLaunch:(ADJSavedPreLaunch *)savedPreLaunch;
+- (id)initWithConfig:(ADJConfig *)adjustConfig
+      savedPreLaunch:(ADJSavedPreLaunch *)savedPreLaunch;
 
 - (void)addSessionCallbackParameterI:(ADJActivityHandler *)selfI
                                  key:(NSString *)key
@@ -130,3 +132,19 @@
 - (void)resetSessionPartnerParametersI:(ADJActivityHandler *)selfI;
 
 @end
+
+@interface ADJTrackingStatusManager : NSObject
+
+- (instancetype)initWithActivityHandler:(ADJActivityHandler *)activityHandler;
+
+- (void)checkForNewAttStatus;
+- (void)updateAttStatusFromUserCallback:(int)newAttStatusFromUser;
+
+- (BOOL)canGetAttStatus;
+
+@property (nonatomic, readonly, assign) BOOL trackingEnabled;
+@property (nonatomic, readonly, assign) int attStatus;
+
+@end
+
+extern NSString * const ADJiAdPackageKey;
