@@ -64,7 +64,7 @@ We will describe the steps to integrate the Adjust SDK into your iOS project. We
 If you're using [CocoaPods][cocoapods], you can add the following line to your `Podfile` and continue from [this step](#sdk-integrate):
 
 ```ruby
-pod 'Adjust/WebBridge', '~> 4.23.0'
+pod 'Adjust/WebBridge', '~> 4.23.2'
 ```
 
 ---
@@ -85,7 +85,7 @@ You can also choose to integrate the Adjust SDK by adding it to your project as 
 2. In the left-hand side of the main view, select your target
 3. In the `Build Phases` tab, expand the `Link Binary with Libraries` group
 4. At the bottom of that section, select the `+` button
-5. Select the `AdSupport.framework`, then the `Add` button 
+5. Select the `AdSupport.framework`, then the `Add` button
 6. Repeat the same steps to add the `iAd.framework`, `CoreTelephony.framework` and `WebView.framework`
 7. Change the `Status` of the frameworks to `Optional`.
 
@@ -109,7 +109,7 @@ Next, we'll set up basic session tracking.
 
 ### <a id="bridge-integrate-app"></a>Integrate AdjustBridge into your app
 
-In the Project Navigator open the source file your View Controller. Add the `import` statement at the top of the file. In 
+In the Project Navigator open the source file your View Controller. Add the `import` statement at the top of the file. In
 the `viewDidLoad` or `viewWillAppear` method of your Web View Delegate add the following calls to `AdjustBridge`:
 
 ```objc
@@ -476,7 +476,7 @@ Adjust.setEnabled(false);
 ```js
 Adjust.isEnabled(function(isEnabled) {
     if (isEnabled) {
-        // SDK is enabled.    
+        // SDK is enabled.
     } else {
         // SDK is disabled.
     }
@@ -520,7 +520,7 @@ Upon receiving this information, Adjust will erase the user's data and the Adjus
 
 ### <a id="disable-third-party-sharing"></a>Disable third-party sharing
 
-You can now notify Adjust when a user has exercised their right to stop sharing their data with partners for marketing partners, but has allowed it to be shared for statistics purposes. 
+You can now notify Adjust when a user has exercised their right to stop sharing their data with partners for marketing partners, but has allowed it to be shared for statistics purposes.
 
 Call the following method to instruct the Adjust SDK to communicate the user's choice to disable data sharing to the Adjust backend:
 
@@ -722,7 +722,7 @@ adjustConfig.setDeferredDeeplinkCallback(function(deferredDeeplink) {
     // ...
 });
 ```
-The callback function will be called after the SDK receives a deffered deep link from our server and before opening it. 
+The callback function will be called after the SDK receives a deffered deep link from our server and before opening it.
 
 If this callback is not implemented, **the Adjust SDK will always try to open the deep link by default**.
 
@@ -753,7 +753,7 @@ The call to `appWillOpenUrl` should be done like this to support deep linking re
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     // url object contains your deep link content
-    
+
     [Adjust appWillOpenUrl:url];
 
     // Apply your logic to determine the return value of this method

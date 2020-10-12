@@ -78,13 +78,13 @@ We will describe the steps to integrate the Adjust SDK into your iOS project. We
 If you're using [CocoaPods][cocoapods], you can add the following line to your `Podfile` and continue from [this step](#sdk-integrate):
 
 ```ruby
-pod 'Adjust', '~> 4.23.0'
+pod 'Adjust', '~> 4.23.2'
 ```
 
 or:
 
 ```ruby
-pod 'Adjust', :git => 'https://github.com/adjust/ios_sdk.git', :tag => 'v4.23.0'
+pod 'Adjust', :git => 'https://github.com/adjust/ios_sdk.git', :tag => 'v4.23.2'
 ```
 
 ---
@@ -93,6 +93,14 @@ If you're using [Carthage][carthage], you can add following line to your `Cartfi
 
 ```ruby
 github "adjust/ios_sdk"
+```
+
+---
+
+If you're using Swift Package Manager, you can add the repository address directly in Xcode going to `File > Swift Packages > Add Package Dependency` and continue from [this step](#sdk-frameworks):
+
+```
+https://github.com/adjust/ios_sdk
 ```
 
 ---
@@ -112,7 +120,7 @@ If you are having `iMessage` app, you can use the Adjust SDK with it as well wit
 
 ### <a id="sdk-frameworks"></a>Add iOS frameworks
 
-Adjust SDK is able to get additional information in case you link additional iOS frameworks to your app. Please, add following frameworks in case you want to enable Adjust SDK features based on their presence in your app:
+Adjust SDK is able to get additional information in case you link additional iOS frameworks to your app. Please, add following frameworks in case you want to enable Adjust SDK features based on their presence in your app and mark them as optional:
 
 - `AdSupport.framework` - This framework is needed so that SDK can access to IDFA value and (prior to iOS 14) LAT information.
 - `iAd.framework` - This framework is needed so that SDK can automatically handle attribution for ASA campaings you might be running.
@@ -225,7 +233,7 @@ Add call to `trackSubsessionEnd` inside of `willResignActiveWithConversation:` m
     // Called when the extension is about to move from the active to inactive state.
     // This will happen when the user dissmises the extension, changes to a different
     // conversation or quits Messages.
-    
+
     // Use this method to release shared resources, save user data, invalidate timers,
     // and store enough state information to restore your extension to its current state
     // in case it is terminated later.
@@ -331,9 +339,7 @@ To use this wrapper, you can call it as such:
 
 ### <a id="skadn-framework"></a>SKAdNetwork framework
 
-If you have implemented the Adjust iOS SDK v4.23.0 or above and your app is running on iOS 14, the communication with SKAdNetwork will be set on by default, although you can choose to turn it off. When set on, Adjust automatically registers for SKAdNetwork attribution when the SDK is initialized. If events are set up in the Adjust dashboard to receive conversion values, the Adjust backend sends the conversion value data to the SDK. The SDK then sets the conversion value. After Adjust receives the SKAdNetwork callback data, it is then displayed in the dashboard. 
-
-Conversion values can optionally be attached to callback parameters during callbacks.
+If you have implemented the Adjust iOS SDK v4.23.0 or above and your app is running on iOS 14, the communication with SKAdNetwork will be set on by default, although you can choose to turn it off. When set on, Adjust automatically registers for SKAdNetwork attribution when the SDK is initialized. If events are set up in the Adjust dashboard to receive conversion values, the Adjust backend sends the conversion value data to the SDK. The SDK then sets the conversion value. After Adjust receives the SKAdNetwork callback data, it is then displayed in the dashboard.
 
 In case you don't want the Adjust SDK to automatically communicate with SKAdNetwork, you can disable that by calling the following method on configuration object:
 
@@ -583,9 +589,9 @@ Currently we support the below `source` parameter values:
 
 ### <a id="subscriptions"></a>Subscription tracking
 
-**Note**: This feature is only available in the native SDK v4.22.0 and above. We recommend using at least version 4.22.1. 
+**Note**: This feature is only available in the native SDK v4.22.0 and above. We recommend using at least version 4.22.1.
 
-**Important**: The following steps only set up subscription tracking within the SDK. To complete setup, certain app-specific information must be added within Adjust’s internal interface. An Adjust representative must take this action: please contact support@adjust.com or your Technical Account Manager. 
+**Important**: The following steps only set up subscription tracking within the SDK. To complete setup, certain app-specific information must be added within Adjust’s internal interface. An Adjust representative must take this action: please contact support@adjust.com or your Technical Account Manager.
 
 You can track App Store subscriptions and verify their validity with the Adjust SDK. After a subscription has been successfully purchased, make the following call to the Adjust SDK:
 
@@ -728,7 +734,7 @@ Upon receiving this information, Adjust will erase the user's data and the Adjus
 
 ### <a id="disable-third-party-sharing"></a>Disable third-party sharing
 
-You can now notify Adjust when a user has exercised their right to stop sharing their data with partners for marketing partners, but has allowed it to be shared for statistics purposes. 
+You can now notify Adjust when a user has exercised their right to stop sharing their data with partners for marketing partners, but has allowed it to be shared for statistics purposes.
 
 Call the following method to instruct the Adjust SDK to communicate the user's choice to disable data sharing to the Adjust backend:
 
@@ -944,7 +950,7 @@ The call to `appWillOpenUrl` should be done like this to support deep linking re
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     // url object contains your deep link content
-    
+
     [Adjust appWillOpenUrl:url];
 
     // Apply your logic to determine the return value of this method

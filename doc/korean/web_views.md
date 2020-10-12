@@ -64,7 +64,7 @@ iOS 개발용 Xcode를 사용한다는 가정하에 iOS 프로젝트에 Adjust S
 [CocoaPods][cocoapods]를 사용하는 경우, 다음 내용을 'Podfile'에 추가한 후 [해당 단계](#sdk-integrate)를 완료하세요.
 
 ```ruby
-pod 'Adjust/WebBridge', '~> 4.23.0'
+pod 'Adjust/WebBridge', '~> 4.23.2'
 ```
 
 ---
@@ -85,7 +85,7 @@ github "adjust/ios_sdk"
 2. 메인 화면 좌측에서 타겟을 선택합니다.
 3. 'Build Phases' 탭에서 'Link Binary with Libraries' 그룹을 확장합니다.
 4. 해당 섹션의 하단에서 '+' 버튼을 선택합니다.
-5. 'AdSupport.framework'를 선택하고 'Add' 버튼을 클릭합니다. 
+5. 'AdSupport.framework'를 선택하고 'Add' 버튼을 클릭합니다.
 6. 동일한 단계를 반복하여 'iAd.framework'를 추가하십시오. `CoreTelephony.framework` and `WebView.framework`
 7. 프레임워크의 'Status'를 'Optional'로 변경합니다.
 
@@ -109,7 +109,7 @@ Adjust SDK를 정적/동적 프레임 워크 또는 Carthage를 통해 추가 �
 
 ### <a id="bridge-integrate-app"></a>AdjustBridge를 앱에 연동하기
 
-프로젝트 네비게이터에서 소스 파일 View Controller를 엽니 다. 파일 맨 위에`import` 문구를 추가하십시오.  
+프로젝트 네비게이터에서 소스 파일 View Controller를 엽니 다. 파일 맨 위에`import` 문구를 추가하십시오.
 Web View Delegate의`viewDidLoad` 또는`viewWillAppear` 메소드는`AdjustBridge`에 다음 호출을 추가합니다.
 
 ```objc
@@ -476,7 +476,7 @@ Adjust.setEnabled(false);
 ```js
 Adjust.isEnabled(function(isEnabled) {
     if (isEnabled) {
-        // SDK가 활성화되었습니다.    
+        // SDK가 활성화되었습니다.
     } else {
         // SDK가 비활성화되었습니다.
     }
@@ -520,7 +520,7 @@ Adjust.gdprForgetMe();
 
 ### <a id="disable-third-party-sharing"> </a> 타사 공유 비활성화
 
-이제 사용자가 마케팅 파트너를 위해 파트너와 데이터 공유를 중단할 수 있는 권리를 행사하였지만 통계적인 목적을 위해 공유할 수 있도록 허용했다는 것을 Adjust에 알릴 수 있습니다. 
+이제 사용자가 마케팅 파트너를 위해 파트너와 데이터 공유를 중단할 수 있는 권리를 행사하였지만 통계적인 목적을 위해 공유할 수 있도록 허용했다는 것을 Adjust에 알릴 수 있습니다.
 
 다음 메서드를 호출하여 Adjust SDK가 데이터 공유 비활성화에 대한 사용자의 선택과 관련된 정보를 Adjust 백엔드에 보냅니다:
 
@@ -722,7 +722,7 @@ adjustConfig.setDeferredDeeplinkCallback(function(deferredDeeplink) {
     // ...
 });
 ```
-콜백 함수는 SDK가 Adjust 서버에서 지연된 딥링크를 수신하고 열기 전에 호출됩니다. 
+콜백 함수는 SDK가 Adjust 서버에서 지연된 딥링크를 수신하고 열기 전에 호출됩니다.
 
 이 콜백이 구현되지 않으면 **Adjust SDK는 항상 기본적으로 해당 딥링크를 열려고 시도합니다.**.
 
@@ -753,7 +753,7 @@ Adjust를 사용하면 립링크를 사용하여 리인게이지먼트(재유입
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     // url 객체에 딥링크 콘텐츠가 있습니다
-    
+
     [Adjust appWillOpenUrl:url];
 
     //이 메서드의 리턴값을 결정하기 위해 로직을 적용합니다.

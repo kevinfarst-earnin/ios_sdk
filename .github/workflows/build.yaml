@@ -1,7 +1,7 @@
 on:
-  create:
-    tags:
-      - v*
+  push:
+    branches:
+      - refs/tags/*
 name: Build framework
 jobs:
   static:
@@ -57,7 +57,7 @@ jobs:
           mv Adjust.xcodeproj/xcshareddata/xcschemes/AdjustSdkIm.xcscheme \
             Adjust.xcodeproj/xcshareddata/xcschemes/AdjustSdkWebBridge.xcscheme .
           carthage build --no-skip-current
-          
+
           mkdir AdjustSdkDynamic
           mv Carthage/Build/iOS/* AdjustSdkDynamic
           zip -ry AdjustSdkDynamic.framework.zip AdjustSdkDynamic/*
@@ -90,7 +90,7 @@ jobs:
           mv AdjustSdkIm.xcscheme Adjust.xcodeproj/xcshareddata/xcschemes
 
           carthage build --no-skip-current
-          
+
           mkdir AdjustSdkImDynamic
           mv Carthage/Build/iOS/* AdjustSdkImDynamic
           zip -ry AdjustSdkIm.framework.zip AdjustSdkImDynamic/*
@@ -143,63 +143,63 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           path: frameworks
-          
+
       - name: Upload static framework
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: frameworks/static_framework/AdjustSdkStatic.framework.zip
           asset_name: AdjustSdkStatic.framework.zip
           asset_content_type: application/zip
-          
+
       - name: Upload tvOS framework
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: frameworks/universal_tvos/AdjustSdkTvStatic.framework.zip
           asset_name: AdjustSdkTvStatic.framework.zip
           asset_content_type: application/zip
-          
+
       - name: Upload dynamic iOS framework
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: frameworks/dynamic_ios/AdjustSdkDynamic.framework.zip
           asset_name: AdjustSdkDynamic.framework.zip
           asset_content_type: application/zip
-          
+
       - name: Upload dynamic tvOS framework
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: frameworks/dynamic_tvos/AdjustSdkTvDynamic.framework.zip
           asset_name: AdjustSdkTvDynamic.framework.zip
           asset_content_type: application/zip
-          
+
       - name: Upload dynamic iMessage framework
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: frameworks/dynamic_imessage/AdjustSdkIm.framework.zip
           asset_name: AdjustSdkIm.framework.zip
           asset_content_type: application/zip
-          
+
       - name: Upload dynamic WebBridge framework
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: frameworks/dynamic_webbridge/AdjustSdkWebBridge.framework.zip
           asset_name: AdjustSdkWebBridge.framework.zip
           asset_content_type: application/zip

@@ -1,3 +1,16 @@
+### Version 4.23.2 (28th September 2020)
+#### Added
+- Added support for Swift Package Manager (thanks to @mstfy).
+
+---
+
+### Version 4.23.1 (16th September 2020)
+#### Fixed
+- Fixed warning about storing negative value to `NSUInteger` data type.
+- Fixed duplicated `ADJURLStrategy` symbols error when using static framework.
+
+---
+
 ### Version 4.23.0 (19th August 2020)
 #### Added
 - Added communication with SKAdNetwork framework by default on iOS 14.
@@ -382,7 +395,7 @@
 - Accessing private properties directly when copying.
 - Removed static framework build with no Bitcode support from releases page.
 - Updated docs.
- 
+
 #### Fixed
 - Allow foreground/background timer to work in offline mode.
 - Use `synchronized` blocks to prevent write deadlock/contention.
@@ -426,7 +439,7 @@
 ---
 
 ### Version 4.8.0 (25th July 2016)
-#### Added 
+#### Added
 - Added tracking support for native web apps (no SDK version change).
 
 ### Changed
@@ -435,7 +448,7 @@
 ---
 
 ### Version 4.8.0 (18th July 2016)
-#### Added 
+#### Added
 - Added `sendAdWordsRequest` method on `Adjust` instance to support AdWords Search and Mobile Web tracking.
 
 ---

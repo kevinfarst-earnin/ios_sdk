@@ -1,4 +1,4 @@
-## Migrate your Adjust SDK for iOS to v4.23.0 from v3.4.0
+## Migrate your Adjust SDK for iOS to v4.23.2 from v3.4.0
 
 ### Initial setup
 
@@ -65,7 +65,7 @@ without associated event tokens. You might need to create an additional event to
 in your dashboard. The optional transaction ID is now a property of the event
 instance.
 
-*Please note* - the revenue format has been changed from a cent float to a whole 
+*Please note* - the revenue format has been changed from a cent float to a whole
 currency-unit float. Current revenue tracking must be adjusted to whole currency
 units (i.e., divided by 100) in order to remain consistent.
 

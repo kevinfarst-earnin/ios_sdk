@@ -25,13 +25,13 @@ adjust SDKをiOSプロジェクトに連携する手順を説明します。
 [こちらの手順](#sdk-integrate)に進んでください。
 
 ```ruby
-pod 'Adjust', '~> 4.23.0'
+pod 'Adjust', '~> 4.23.2'
 ```
 
 または
 
 ```ruby
-pod 'Adjust', :git => 'https://github.com/adjust/ios_sdk.git', :tag => 'v4.23.0'
+pod 'Adjust', :git => 'https://github.com/adjust/ios_sdk.git', :tag => 'v4.23.2'
 ```
 
 ---
@@ -53,8 +53,8 @@ adjust SDKはフレームワークとしてプロジェクトに追加するこ�
 * `AdjustSdkTv.framework.zip`
 * `AdjustSdkIm.framework.zip`
 
-iOS 8リリース以降、AppleはDynamic Frameworks (Embedded Framework)を導入しています。 
-iOS 8以降の端末をターゲットにしている場合は、adjustの SDK dynamic frameworkが使用できます。 
+iOS 8リリース以降、AppleはDynamic Frameworks (Embedded Framework)を導入しています。
+iOS 8以降の端末をターゲットにしている場合は、adjustの SDK dynamic frameworkが使用できます。
 StaticかDynamicフレームワークを選択し、プロジェクトに追加してください。
 
 `tvOS`アプリの場合もadjust SDKの利用が可能です。
@@ -62,15 +62,15 @@ StaticかDynamicフレームワークを選択し、プロジェクトに追加�
 
 同様に`iMessage`アプリの場合もadjust SDKの利用が可能です。`AdjustSdkIm.framework.zip`アーカイブからIMフレームワークを展開してください。
 
-#### <a id="sdk-frameworks"></a>iOSフレームワークを追加する
+### <a id="sdk-frameworks"></a>iOSフレームワークを追加する
 
-1. プロジェクトナビゲータ上でプロジェクトを選択します。
-2. メインビューの左側にある該当ターゲットを選択します。
-3. `Build Phases`タブで、`Link Binary with Libraries`を開きます。
-4. そのセクションの最下部にある`+`ボタンをクリックします。
-5. `AdSupport.framework`を選び、`Add`をクリックします。
-6. tvOSを使用していない場合は、同じ手順を繰り返して`iAd.framework`と`CoreTelephony.framework`を追加してください。
-7. フレームワークの`Status`を`Optional`にしてください。
+アプリにiOSフレームワークを追加で連携した場合、Adjust SDKはその情報を呼び出し、取得することができます。iOSフレームワークに対応するAdjust SDKの機能を有効化するには、以下のフレームワークをアプリに追加してください。
+
+- `AdSupport.framework` - SDKがIDFA値および（iOS 14より前の）LAT情報を呼び出せるようにします。
+- `iAd.framework` - SDKが実行中のASAキャンペーンのアトリビューションを自動的に処理できるようにします。
+- `CoreTelephony.framework`- SDKが現在のRadio Access Technology（無線アクセス技術）を判別できるようにします。
+- `StoreKit.framework`- iOS 14またはそれ以降において、このフレームワークは「SKAdNetwork」のフレームワークにアクセスし、「SKAdNetwork」との通信をAdjust SDKで自動的に処理できるようにします。
+- `AppTrackingTransparency.framework` -iOS 14またはそれ以降において、このフレームワークはSDKがトラッキングに対するユーザー同意を確認するダイアログをラップし、ユーザーの許諾状況を示す値にアクセスできるようにします。
 
 #### <a id="sdk-integrate"></a>SDKをアプリに実装する
 
@@ -181,7 +181,7 @@ NSString *environment = ADJEnvironmentProduction;
     // Called when the extension is about to move from the active to inactive state.
     // This will happen when the user dissmises the extension, changes to a different
     // conversation or quits Messages.
-    
+
     // Use this method to release shared resources, save user data, invalidate timers,
     // and store enough state information to restore your extension to its current state
     // in case it is terminated later.
@@ -240,6 +240,64 @@ ADJConfig *adjustConfig = [ADJConfig configWithAppToken:yourAppToken
 ### <a id="additional-feature">追加機能
 
 adjust SDKの実装ができたら、更に以下の機能を利用することができます。
+
+### <a id="att-framework"></a>AppTrackingTransparencyフレームワーク
+
+各パッケージが送信されるたびに、Adjustのバックエンドは、アプリ関連データへのアクセスに関するユーザーの許諾状況を表す、以下の4つの値のいずれかを受信します。
+
+- Authorized（承認）
+- Denied（拒否）
+- Not Determined（未決定）
+- Restricted（制限あり）
+
+デバイスがアプリ関連データへのアクセスに対するユーザーの許諾状況の承認リクエスト（ユーザーのデバイストラッキングに使用）を受信した後は、返されるステータスはAuthorizedあるいはDeniedになります。
+
+デバイスがアプリ関連データへのアクセスの承認リクエスト（ユーザーあるいはデバイスのトラッキングに使用）を受信する前は、返されるステータスはNot Determinedになります。
+
+アプリのトラッキングデータの使用が制限されている場合は、返されるステータスはRestrictedになります。
+
+表示されるポップアップダイアログのカスタマイズを希望しない場合のために、このSDKには、ユーザーがポップアップダイアログに応答した後に、更新ステータスを受信するメカニズムが組み込まれています。新しい許諾ステータスをバックエンドに簡単かつ効率的に伝達するために、Adjust SDKはアプリのトラッキング承認メソッドのラッパーを提供しています。次の項目の説明をご覧ください。
+
+### <a id="ata-wrapper"></a>アプリトラッキング承認ラッパー(App-tracking authorisation wrapper)
+
+Adjust SDKは、アプリトラッキング承認ラッパーを使用して、アプリ関連データへのアクセスに対するユーザーの許諾状況をリクエストすることができます。Adjust SDKには、[requestTrackingAuthorizationWithCompletionHandler:](https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanager/3547037-requesttrackingauthorizationwith?language=objc)メソッドに基づいて構築されたラッパーが用意されており、ユーザーの選択についての情報を取得するためのコールバックメソッドを定義することもできます。また、このラッパーを使用することで、ユーザーがポップアップダイアログに応答すると、その内容がコールバックメソッドで直ちに伝達されます。SDKは、ユーザーの選択をバックエンドにも通知します。「NSUInteger」の値はコールバックメソッドによって伝達されます。値の意味は次のとおりです。
+
+- 0: `ATTrackingManagerAuthorizationStatusNotDetermined`（承認ステータスは「未決定」）
+- 1: `ATTrackingManagerAuthorizationStatusRestricted`（承認ステータスは「制限あり」）
+- 2: `ATTrackingManagerAuthorizationStatusDenied`（承認ステータスは「拒否」）
+- 3: `ATTrackingManagerAuthorizationStatusAuthorized`（承認ステータスは「承認」）
+
+このラッパーを使用するためには、次のように呼び出してください。
+
+```objc
+[Adjust requestTrackingAuthorizationWithCompletionHandler:^(NSUInteger status) {
+    switch (status) {
+        case 0:
+            // ATTrackingManagerAuthorizationStatusNotDetermined の場合
+            break;
+        case 1:
+            // ATTrackingManagerAuthorizationStatusRestricted の場合
+            break;
+        case 2:
+            // ATTrackingManagerAuthorizationStatusDenied の場合
+            break;
+        case 3:
+            // ATTrackingManagerAuthorizationStatusAuthorizedの場合
+            break;
+    }
+}];
+```
+
+### <a id="skadn-framework"></a>SKAdNetworkフレームワーク
+
+Adjust iOS SDK v4.23.0以上を実装済みであり、アプリがiOS14で実行されている場合、SKAdNetworkとの通信はデフォルトでONに設定されますが、選択によりOFFにすることもできます。ONに設定すると、SDKの初期化時にSKAdNetworkのアトリビューションがAdjustによって自動的に登録されます。conversion value（コンバージョン値）を受信するためにAdjust管理画面でイベントを設定する場合、conversaion valueのデータはAdjustバックエンドからSDKに送信されます。その後、SDKによってconversion valueが設定されます。SKAdNetworkコールバックデータをAdjustで受信した後、このデータが管理画面に表示されます。
+
+Adjust SDKがSKAdNetworkと自動的に通信しないようにしたい場合は、設定オブジェクトで次のメソッドを呼び出すことによって通信を無効化できます。
+
+```objc
+[adjustConfig deactivateSKAdNetworkHandling];
+```
+
 
 #### <a id="event-tracking">イベントトラッキング
 
@@ -615,7 +673,7 @@ adjust SDKがオンラインモードに戻った時、保存されていた情�
 [Adjust gdprForgetMe];
 ```
 
-この情報を受け取ると、Adjustはユーザーのデータを消去し、Adjust SDKはユーザーの追跡を停止します。この削除された端末からのリクエストは今後、Adjustに送信されません。 
+この情報を受け取ると、Adjustはユーザーのデータを消去し、Adjust SDKはユーザーの追跡を停止します。この削除された端末からのリクエストは今後、Adjustに送信されません。
 
 #### <a id="background-tracking">バックグラウンドでのトラッキング
 
@@ -817,7 +875,7 @@ adjustはディープリンクを使ったリエンゲージメントキャン�
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     // url object contains your deep link content
-    
+
     [Adjust appWillOpenUrl:url];
 
     // Apply your logic to determine the return value of this method
@@ -1131,6 +1189,6 @@ Copyright (c) 2012-2019 Adjust GmbH, http://www.adjust.com
 上記の著作権表示および本許諾表示を、ソフトウェアのすべての複製または重要な部分に記載するものとします。
 
 ソフトウェアは「現状のまま」で、明示であるか暗黙であるかを問わず、何らの保証もなく提供されます。
-ここでいう保証とは、商品性、特定の目的への適合性、および権利非侵害についての保証も含みますが、それに限定されるものではありません。 
+ここでいう保証とは、商品性、特定の目的への適合性、および権利非侵害についての保証も含みますが、それに限定されるものではありません。
 作者または著作権者は、契約行為、不法行為、またはそれ以外であろうと、ソフトウェアに起因または関連し、
 あるいはソフトウェアの使用またはその他の扱いによって生じる一切の請求、損害、その他の義務について何らの責任も負わないものとします。

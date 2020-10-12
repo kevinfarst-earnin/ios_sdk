@@ -198,7 +198,7 @@
         [ADJAdjustFactory.logger error:@"Failed to obtain CPU count (%d)", error];
         return 1;
     }
-    
+
     return value;
 }
 
@@ -271,7 +271,7 @@
     int64_t hertz = 0;
 	size_t size = sizeof(hertz);
 	int mib[2] = {CTL_HW, HW_CPU_FREQ};
-	
+
 	error = sysctl(mib, 2, &hertz, &size, NULL, 0);
     if (error) {
         [ADJAdjustFactory.logger error:@"Failed to obtain CPU speed (%d)", error];
@@ -832,7 +832,8 @@
     if (![[UIDevice currentDevice] isBatteryMonitoringEnabled]) {
        [[UIDevice currentDevice] setBatteryMonitoringEnabled:YES];
     }
-    NSUInteger batteryLevel = (NSUInteger)(UIDevice.currentDevice.batteryLevel * 100);
+    float fBatteryLevel = UIDevice.currentDevice.batteryLevel;
+    NSUInteger batteryLevel = fBatteryLevel >= 0 ? (NSUInteger)(fBatteryLevel * 100) : 0;
     return batteryLevel;
 #endif
 }
