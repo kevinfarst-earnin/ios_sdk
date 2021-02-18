@@ -16,6 +16,7 @@ static NSString * const PREFS_KEY_DEEPLINK_URL = @"adj_deeplink_url";
 static NSString * const PREFS_KEY_DEEPLINK_CLICK_TIME = @"adj_deeplink_click_time";
 static NSString * const PREFS_KEY_DISABLE_THIRD_PARTY_SHARING = @"adj_disable_third_party_sharing";
 static NSString * const PREFS_KEY_IAD_ERRORS = @"adj_iad_errors";
+static NSString * const PREFS_KEY_ADSERVICES_TRACKED = @"adj_adservices_tracked";
 
 @implementation ADJUserDefaults
 
@@ -94,7 +95,7 @@ static NSString * const PREFS_KEY_IAD_ERRORS = @"adj_iad_errors";
 
 + (void)saveiAdErrorKey:(NSString *)key {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    
+
     NSMutableDictionary<NSString *, NSNumber *> *errors = [[userDefaults dictionaryForKey:PREFS_KEY_IAD_ERRORS] mutableCopy];
     if (errors) {
         NSNumber *value = errors[key];
@@ -103,12 +104,12 @@ static NSString * const PREFS_KEY_IAD_ERRORS = @"adj_iad_errors";
         } else {
             value = @([value integerValue] + 1);
         }
-        
+
         errors[key] = value;
     } else {
         errors[key] = @(1);
     }
-    
+
     [userDefaults setObject:errors forKey:PREFS_KEY_IAD_ERRORS];
 }
 
@@ -120,6 +121,14 @@ static NSString * const PREFS_KEY_IAD_ERRORS = @"adj_iad_errors";
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:PREFS_KEY_IAD_ERRORS];
 }
 
++ (void)setAdServicesTracked {
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:PREFS_KEY_ADSERVICES_TRACKED];
+}
+
++ (BOOL)getAdServicesTracked {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:PREFS_KEY_ADSERVICES_TRACKED];
+}
+
 + (void)clearAdjustStuff {
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:PREFS_KEY_PUSH_TOKEN_DATA];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:PREFS_KEY_PUSH_TOKEN_STRING];
@@ -128,6 +137,8 @@ static NSString * const PREFS_KEY_IAD_ERRORS = @"adj_iad_errors";
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:PREFS_KEY_DEEPLINK_URL];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:PREFS_KEY_DEEPLINK_CLICK_TIME];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:PREFS_KEY_DISABLE_THIRD_PARTY_SHARING];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:PREFS_KEY_IAD_ERRORS];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:PREFS_KEY_ADSERVICES_TRACKED];
 }
 
 @end

@@ -145,6 +145,21 @@ static NSString * fbAppIdStatic = nil;
                 if (WebViewJavascriptBridge) {
                     WebViewJavascriptBridge.callHandler('adjust_idfa', null, callback);
                 }
+                },
+            requestTrackingAuthorizationWithCompletionHandler: function(callback) {
+                if (WebViewJavascriptBridge) {
+                    WebViewJavascriptBridge.callHandler('adjust_requestTrackingAuthorizationWithCompletionHandler', null, callback);
+                }
+            },
+            getAppTrackingAuthorizationStatus: function(callback) {
+                if (WebViewJavascriptBridge) {
+                    WebViewJavascriptBridge.callHandler('adjust_appTrackingAuthorizationStatus', null, callback);
+                }
+            },
+            updateConversionValue: function(conversionValue) {
+                if (WebViewJavascriptBridge) {
+                    WebViewJavascriptBridge.callHandler('adjust_updateConversionValue', conversionValue, null);
+                }
             },
             getAdid: function(callback) {
                 if (WebViewJavascriptBridge) {
@@ -201,6 +216,16 @@ static NSString * fbAppIdStatic = nil;
                     WebViewJavascriptBridge.callHandler('adjust_disableThirdPartySharing', null, null);
                 }
             },
+            trackThirdPartySharing: function(adjustThirdPartySharing) {
+                if (WebViewJavascriptBridge != null) {
+                    WebViewJavascriptBridge.callHandler('adjust_trackThirdPartySharing', adjustThirdPartySharing, null);
+                }
+            },
+            trackMeasurementConsent: function(consentMeasurement) {
+                if (WebViewJavascriptBridge != null) {
+                    WebViewJavascriptBridge.callHandler('adjust_trackMeasurementConsent', consentMeasurement, null);
+                }
+            },
             fbPixelEvent: function(pixelID, evtName, customData) {
                 if (WebViewJavascriptBridge != null) {
                     WebViewJavascriptBridge.callHandler('adjust_fbPixelEvent',
@@ -221,7 +246,7 @@ static NSString * fbAppIdStatic = nil;
                 if (this.sdkPrefix) {
                     return this.sdkPrefix;
                 } else {
-                    return 'web-bridge4.23.2';
+                    return 'web-bridge4.26.1';
                 }
             },
             setTestOptions: function(testOptions) {
@@ -261,6 +286,18 @@ static NSString * fbAppIdStatic = nil;
             this.callbackId = callbackId;
         };
 
+        // Adjust Third Party Sharing
+        window.AdjustThirdPartySharing = function(isEnabled) {
+            this.isEnabled = isEnabled;
+            this.granularOptions = [];
+        };
+
+        AdjustThirdPartySharing.prototype.addGranularOption = function(partnerName, key, value) {
+            this.granularOptions.push(partnerName);
+            this.granularOptions.push(key);
+            this.granularOptions.push(value);
+        };
+
         // Copied from adjust_config.js
         window.AdjustConfig = function(appToken, environment, legacy) {
             if (arguments.length === 2) {
@@ -290,7 +327,9 @@ static NSString * fbAppIdStatic = nil;
             this.delayStart = null;
             this.userAgent = null;
             this.isDeviceKnown = null;
+            this.needsCost = null;
             this.allowiAdInfoReading = null;
+            this.allowAdServicesInfoReading = null;
             this.allowIdfaReading = null;
             this.secretId = null;
             this.info1 = null;
@@ -370,8 +409,14 @@ static NSString * fbAppIdStatic = nil;
         AdjustConfig.prototype.setIsDeviceKnown = function(isDeviceKnown) {
             this.isDeviceKnown = isDeviceKnown;
         };
+        AdjustConfig.prototype.setNeedsCost = function(needsCost) {
+            this.needsCost = needsCost;
+        };
         AdjustConfig.prototype.setAllowiAdInfoReading = function(allowiAdInfoReading) {
             this.allowiAdInfoReading = allowiAdInfoReading;
+        };
+        AdjustConfig.prototype.setAllowAdServicesInfoReading = function(allowAdServicesInfoReading) {
+            this.allowAdServicesInfoReading = allowAdServicesInfoReading;
         };
         AdjustConfig.prototype.setAllowIdfaReading = function(allowIdfaReading) {
             this.allowIdfaReading = allowIdfaReading;

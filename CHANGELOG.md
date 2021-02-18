@@ -1,3 +1,56 @@
+### Version 4.26.1 (5th February 2021)
+
+#### Fixed
+- Fixed nullability warnings.
+
+---
+
+### Version 4.26.0 (3rd February 2021)
+#### Added
+- Added wrapper method `updateConversionValue:` method to `Adjust` API to allow updating SKAdNetwork conversion value via SDK API.
+
+#### Fixed
+- Fixed nullability warnings.
+
+---
+
+### Version 4.25.2 (1st February 2021)
+#### Added
+- Added Facebook audience network ad revenue source string.
+
+---
+
+### Version 4.25.1 (18th January 2021)
+#### Fixed
+- Fixed missing header error for SPM users from v4.25.0.
+
+---
+
+### Version 4.25.0 (16th January 2021)
+#### Added
+- Added support for Apple Search Ads attribution with usage of `AdServices.framework`.
+- Added `appTrackingAuthorizationStatus` getter to `Adjust` instance to be able to get current app tracking status.
+- Added improved measurement consent management and third party sharing system.
+
+---
+
+### Version 4.24.0 (9th December 2020)
+#### Added
+- Added possibility to get cost data information in attribution callback.
+- Added `setNeedsCost:` method to `ADJConfig` to indicate if cost data is needed in attribution callback (by default cost data will not be part of attribution callback if not enabled with this setter method).
+- Enabled position independent code generation.
+
+#### Changed
+- Improved logging.
+- Addressed Xcode warnings regarding deprecated API usage.
+- Removed some obsolete and unused API.
+
+#### Public PRs
+- Updated README (https://github.com/adjust/ios_sdk/pull/472).
+- Replaced `malloc` with more secure `calloc` calls (https://github.com/adjust/ios_sdk/pull/432).
+
+---
+
 ### Version 4.23.2 (28th September 2020)
 #### Added
 - Added support for Swift Package Manager (thanks to @mstfy).

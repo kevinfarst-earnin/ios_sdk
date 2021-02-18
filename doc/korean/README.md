@@ -76,13 +76,13 @@ iOS 개발용 Xcode를 사용한다는 가정하에 iOS 프로젝트에 Adjust S
 [CocoaPods][cocoapods]를 사용하는 경우, 다음 내용을 `Podfile`에 추가한 후 [해당 단계](#sdk-integrate)를 완료하세요.
 
 ```ruby
-pod 'Adjust', '~> 4.23.2'
+pod 'Adjust', '~> 4.26.1'
 ```
 
 또는:
 
 ```ruby
-pod 'Adjust', :git => 'https://github.com/adjust/ios_sdk.git', :tag => 'v4.23.2'
+pod 'Adjust', :git => 'https://github.com/adjust/ios_sdk.git', :tag => 'v4.26.1'
 ```
 
 ---
@@ -1103,7 +1103,7 @@ Adjust SDK는 지정한 대상만 추적합니다. 매출을 이벤트에 연결
 
 [special-partners]:     https://docs.adjust.com/ko/special-partners
 [attribution-data]:     https://github.com/adjust/sdks/blob/master/doc/attribution-data.md
-[ios-web-views-guide]:  doc/english/web_views.md
+[ios-web-views-guide]:  /web_views.md
 [currency-conversion]:  https://docs.adjust.com/ko/event-tracking/#part-7
 
 [universal-links-guide]:      https://docs.adjust.com/ko/universal-links/

@@ -122,6 +122,8 @@ typedef void (^isInactiveInjected)(BOOL);
 + (NSString *)decimalToBinaryString:(NSUInteger)decInt;
 
 + (NSString *)enforceParameterLength:(NSString *)parameter
-                       withMaxlength:(int)maxLength;
+                       withMaxlength:(NSUInteger)maxLength;
+
++ (void)updateSkAdNetworkConversionValue:(NSNumber *)conversionValue;
 
 @end

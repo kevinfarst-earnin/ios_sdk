@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F84514F25B1B2090004C7C0 /* ADJThirdPartySharing.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F84514E25B1B2090004C7C0 /* ADJThirdPartySharing.m */; };
 		6FBEE91D24E4219E00FEF3F1 /* ADJUrlStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FBEE91B24E4219D00FEF3F1 /* ADJUrlStrategy.m */; };
 		9D0F16A62193F96F00F5140E /* AdjustBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D0F16542193F96F00F5140E /* AdjustBridge.m */; };
 		9D0F16A72193F96F00F5140E /* WebViewJavascriptBridgeBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D0F16572193F96F00F5140E /* WebViewJavascriptBridgeBase.m */; };
@@ -62,6 +63,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6F84514D25B1B2090004C7C0 /* ADJThirdPartySharing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADJThirdPartySharing.h; sourceTree = "<group>"; };
+		6F84514E25B1B2090004C7C0 /* ADJThirdPartySharing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADJThirdPartySharing.m; sourceTree = "<group>"; };
 		6FBEE91B24E4219D00FEF3F1 /* ADJUrlStrategy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ADJUrlStrategy.m; path = ../../../Adjust/ADJUrlStrategy.m; sourceTree = "<group>"; };
 		6FBEE91C24E4219E00FEF3F1 /* ADJUrlStrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ADJUrlStrategy.h; path = ../../../Adjust/ADJUrlStrategy.h; sourceTree = "<group>"; };
 		9D0F16542193F96F00F5140E /* AdjustBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdjustBridge.m; sourceTree = "<group>"; };
@@ -283,6 +286,8 @@
 				9D2F241B2447DE5A00B7CA90 /* ADJSubscription.m */,
 				6FBEE91C24E4219E00FEF3F1 /* ADJUrlStrategy.h */,
 				6FBEE91B24E4219D00FEF3F1 /* ADJUrlStrategy.m */,
+				6F84514D25B1B2090004C7C0 /* ADJThirdPartySharing.h */,
+				6F84514E25B1B2090004C7C0 /* ADJThirdPartySharing.m */,
 			);
 			name = Adjust;
 			path = ../../../../Adjust;
@@ -374,7 +379,7 @@
 		9D9D1526212EB3920081445E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1240;
 				ORGANIZATIONNAME = "Adjust GmbH";
 				TargetAttributes = {
 					9D9D152D212EB3920081445E = {
@@ -428,6 +433,7 @@
 				9D0F16B12193F96F00F5140E /* ADJSdkClickHandler.m in Sources */,
 				6FBEE91D24E4219E00FEF3F1 /* ADJUrlStrategy.m in Sources */,
 				9D0F16C72193F96F00F5140E /* ADJAdjustFactory.m in Sources */,
+				6F84514F25B1B2090004C7C0 /* ADJThirdPartySharing.m in Sources */,
 				9D0F16C42193F96F00F5140E /* ADJSystemProfile.m in Sources */,
 				9D0F16C32193F96F00F5140E /* ADJAttribution.m in Sources */,
 				9D0F16A62193F96F00F5140E /* AdjustBridge.m in Sources */,
@@ -515,6 +521,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -527,7 +534,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_DYNAMIC_NO_PIC = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -573,6 +580,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -585,6 +593,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;

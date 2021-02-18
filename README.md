@@ -20,7 +20,9 @@ Read this in other languages: [English][en-readme], [中文][zh-readme], [日本
 * [Additional features](#additional-features)
    * [AppTrackingTransparency framework](#att-framework)
       * [App-tracking authorisation wrapper](#ata-wrapper)
+      * [Get current authorisation status](#ata-getter)
    * [SKAdNetwork framework](#skadn-framework)
+      * [Update SKAdNetwork conversion value](#skadn-update-conversion-value)
    * [Event tracking](#event-tracking)
       * [Revenue tracking](#revenue-tracking)
       * [Revenue deduplication](#revenue-deduplication)
@@ -40,7 +42,10 @@ Read this in other languages: [English][en-readme], [中文][zh-readme], [日本
    * [Offline mode](#offline-mode)
    * [Event buffering](#event-buffering)
    * [GDPR right to be forgotten](#gdpr-forget-me)
-   * [Disable third-party sharing](#disable-third-party-sharing)
+   * [Third-party sharing](#third-party-sharing)
+      * [Disable third-party sharing](#disable-third-party-sharing)
+      * [Enable third-party sharing](#enable-third-party-sharing)
+   * [Consent measurement](#measurement-consent)
    * [SDK signature](#sdk-signature)
    * [Background tracking](#background-tracking)
    * [Device IDs](#device-ids)
@@ -78,13 +83,13 @@ We will describe the steps to integrate the Adjust SDK into your iOS project. We
 If you're using [CocoaPods][cocoapods], you can add the following line to your `Podfile` and continue from [this step](#sdk-integrate):
 
 ```ruby
-pod 'Adjust', '~> 4.23.2'
+pod 'Adjust', '~> 4.26.1'
 ```
 
 or:
 
 ```ruby
-pod 'Adjust', :git => 'https://github.com/adjust/ios_sdk.git', :tag => 'v4.23.2'
+pod 'Adjust', :git => 'https://github.com/adjust/ios_sdk.git', :tag => 'v4.26.1'
 ```
 
 ---
@@ -123,7 +128,8 @@ If you are having `iMessage` app, you can use the Adjust SDK with it as well wit
 Adjust SDK is able to get additional information in case you link additional iOS frameworks to your app. Please, add following frameworks in case you want to enable Adjust SDK features based on their presence in your app and mark them as optional:
 
 - `AdSupport.framework` - This framework is needed so that SDK can access to IDFA value and (prior to iOS 14) LAT information.
-- `iAd.framework` - This framework is needed so that SDK can automatically handle attribution for ASA campaings you might be running.
+- `iAd.framework` - This framework is needed so that SDK can automatically handle attribution for ASA campaings you might be running (to be deprecated in the future in favour of `AdServices.framework`).
+- `AdServices.framework` - This framework is needed so that SDK can automatically handle attribution for ASA campaings you might be running.
 - `CoreTelephony.framework` - This framework is needed so that SDK can determine current radio access technology.
 - `StoreKit.framework` - This framework is needed for access to `SKAdNetwork` framework and for Adjust SDK to handle communication with it automatically in iOS 14 or later.
 - `AppTrackingTransparency.framework` - This framework is needed in iOS 14 and later for SDK to be able to wrap user's tracking consent dialog and access to value of the user's consent to be tracked or not.
@@ -337,6 +343,17 @@ To use this wrapper, you can call it as such:
 }];
 ```
 
+### <a id="ata-getter"></a>Get current authorisation status
+
+To get the current app tracking authorization status you can call `[Adjust appTrackingAuthorizationStatus]` that will return one of the following possibilities:
+
+* `0`: The user hasn't been asked yet
+* `1`: The user device is restricted
+* `2`: The user denied access to IDFA
+* `3`: The user authorized access to IDFA
+* `-1`: The status is not available
+
+
 ### <a id="skadn-framework"></a>SKAdNetwork framework
 
 If you have implemented the Adjust iOS SDK v4.23.0 or above and your app is running on iOS 14, the communication with SKAdNetwork will be set on by default, although you can choose to turn it off. When set on, Adjust automatically registers for SKAdNetwork attribution when the SDK is initialized. If events are set up in the Adjust dashboard to receive conversion values, the Adjust backend sends the conversion value data to the SDK. The SDK then sets the conversion value. After Adjust receives the SKAdNetwork callback data, it is then displayed in the dashboard.
@@ -345,6 +362,14 @@ In case you don't want the Adjust SDK to automatically communicate with SKAdNetw
 
 ```objc
 [adjustConfig deactivateSKAdNetworkHandling];
+```
+
+### <a id="skadn-update-conversion-value"></a>Update SKAdNetwork conversion value
+
+As of iOS SDK v4.26.0 you can use Adjust SDK wrapper method `updateConversionValue:` to update SKAdNetwork conversion value for your user:
+
+```objc
+[Adjust updateConversionValue:6];
 ```
 
 ### <a id="event-tracking"></a>Event tracking
@@ -382,7 +407,7 @@ You can read more about revenue and event tracking in the [event tracking guide]
 
 You can also pass in an optional transaction ID to avoid tracking duplicate revenues. The last ten transaction IDs are remembered and revenue events with duplicate transaction IDs are skipped. This is especially useful for in-app purchase tracking. See an example below.
 
-If you want to track in-app purchases, please make sure to call `trackEvent` after `finishTransaction` in `paymentQueue:updatedTransaction` only if the state changed to `SKPaymentTransactionStatePurchased`. That way you can avoid tracking revenue that is not actually being generated.
+If you want to track in-app purchases, please make sure to call `trackEvent` after `finishTransaction` in `paymentQueue:updatedTransactions` only if the state changed to `SKPaymentTransactionStatePurchased`. That way you can avoid tracking revenue that is not actually being generated.
 
 ```objc
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {
@@ -567,8 +592,13 @@ The delegate function will be called after the SDK receives the final attributio
 - `NSString creative` the creative grouping level of the current attribution.
 - `NSString clickLabel` the click label of the current attribution.
 - `NSString adid` the unique device identifier provided by attribution.
+- `NSString costType` the cost type string.
+- `NSNumber costAmount` the cost amount.
+- `NSString costCurrency` the cost currency string.
 
 If any value is unavailable, it will default to `nil`.
+
+Note: The cost data - `costType`, `costAmount` & `costCurrency` are only available when configured in `ADJConfig` by calling `setNeedsCost:` method. If not configured or configured, but not being part of the attribution, these fields will have value `nil`. This feature is available in SDK v4.24.0 and above.
 
 ### <a id="ad-revenue"></a>Ad revenue tracking
 
@@ -606,7 +636,7 @@ ADJSubscription *subscription = [[ADJSubscription alloc] initWithPrice:price
 [Adjust trackSubscription:subscription];
 ```
 
-Only do this when the state has changed to `SKPaymentTransactionStatePurchased` or `SKPaymentTransactionStateRestored`. Then make a call to `finishTransaction` in `paymentQueue:updatedTransaction` .
+Only do this when the state has changed to `SKPaymentTransactionStatePurchased` or `SKPaymentTransactionStateRestored`. Then make a call to `finishTransaction` in `paymentQueue:updatedTransactions` .
 
 Subscription tracking parameters:
 
@@ -732,17 +762,51 @@ In accordance with article 17 of the EU's General Data Protection Regulation (GD
 
 Upon receiving this information, Adjust will erase the user's data and the Adjust SDK will stop tracking the user. No requests from this device will be sent to Adjust in the future.
 
-### <a id="disable-third-party-sharing"></a>Disable third-party sharing
+## <a id="third-party-sharing"></a>Third-party sharing for specific users
 
-You can now notify Adjust when a user has exercised their right to stop sharing their data with partners for marketing partners, but has allowed it to be shared for statistics purposes.
+You can notify Adjust when a user disables, enables, and re-enables data sharing with third-party partners.
+
+### <a id="disable-third-party-sharing"></a>Disable third-party sharing for specific users
 
 Call the following method to instruct the Adjust SDK to communicate the user's choice to disable data sharing to the Adjust backend:
 
 ```objc
-[Adjust disableThirdPartySharing];
+ADJThirdPartySharing *adjustThirdPartySharing = [[ADJThirdPartySharing alloc] initWithIsEnabledNumberBool:@NO];
+[Adjust trackThirdPartySharing:adjustThirdPartySharing];
 ```
 
 Upon receiving this information, Adjust will block the sharing of that specific user's data to partners and the Adjust SDK will continue to work as usual.
+
+### <a id="enable-third-party-sharing">Enable or re-enable third-party sharing for specific users</a>
+
+Call the following method to instruct the Adjust SDK to communicate the user's choice to share data or change data sharing, to the Adjust backend:
+
+```objc
+ADJThirdPartySharing *adjustThirdPartySharing = [[ADJThirdPartySharing alloc] initWithIsEnabledNumberBool:@YES];
+[Adjust trackThirdPartySharing:adjustThirdPartySharing];
+```
+
+Upon receiving this information, Adjust changes sharing the specific user's data to partners. The Adjust SDK will continue to work as expected.
+
+Call the following method to instruct the Adjust SDK to send the granular options to the Adjust backend:
+
+```objc
+ADJThirdPartySharing *adjustThirdPartySharing = [[ADJThirdPartySharing alloc] initWithIsEnabledNumberBool:nil];
+[adjustThirdPartySharing addGranularOption:@"PartnerA" key:@"foo" value:@"bar"];
+[Adjust trackThirdPartySharing:adjustThirdPartySharing];
+```
+
+### <a id="measurement-consent"></a>Consent measurement for specific users
+
+To enable or disable the Data Privacy settings in the Adjust Dashboard, including the consent expiry period and the user data retention period, you need to implement the below method.
+
+Call the following method to instruct the Adjust SDK to communicate the Data Privacy settings, to the Adjust backend:
+
+```objc
+[Adjust trackMeasurementConsent:YES];
+```
+
+Upon receiving this information, Adjust changes sharing the specific user's data to partners. The Adjust SDK will continue to work as expected.
 
 ### <a id="sdk-signature"></a> SDK signature
 
@@ -852,8 +916,7 @@ Deep linking on iOS 8 and earlier devices is being done with usage of a custom U
 After this has been set up, your app will be opened after you click the adjust tracker URL with `deep_link` parameter which contains the scheme name which you have chosen. After app is opened, `openURL` method of your `AppDelegate` class will be triggered and the place where the content of the `deep_link` parameter from the tracker URL will be delivered. If you want to access the content of the deep link, override this method.
 
 ```objc
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
-  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary *)options {
     // url object contains your deep link content
 
     // Apply your logic to determine the return value of this method
@@ -947,8 +1010,7 @@ Once you have received deep link content information in your app, add a call to 
 The call to `appWillOpenUrl` should be done like this to support deep linking reattributions in all iOS versions:
 
 ```objc
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
-  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary *)options {
     // url object contains your deep link content
 
     [Adjust appWillOpenUrl:url];
@@ -1203,7 +1265,7 @@ If you are seing any value in the dashboard other than what you expected to be t
 
 The Adjust SDK is licensed under the MIT License.
 
-Copyright (c) 2012-2019 Adjust GmbH, http://www.adjust.com
+Copyright (c) 2012-2021 Adjust GmbH, http://www.adjust.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

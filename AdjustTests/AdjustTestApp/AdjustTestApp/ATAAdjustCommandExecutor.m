@@ -91,6 +91,10 @@
         [self trackAdRevenue:parameters];
     } else if ([methodName isEqualToString:@"disableThirdPartySharing"]) {
         [self disableThirdPartySharing:parameters];
+    } else if ([methodName isEqualToString:@"thirdPartySharing"]) {
+        [self thirdPartySharing:parameters];
+    } else if ([methodName isEqualToString:@"measurementConsent"]) {
+        [self measurementConsent:parameters];
     } else if ([methodName isEqualToString:@"trackSubscription"]) {
            [self trackSubscription:parameters];
    }
@@ -133,6 +137,13 @@
         NSString *iAdFrameworkEnabledStr = [parameters objectForKey:@"iAdFrameworkEnabled"][0];
         if ([iAdFrameworkEnabledStr isEqualToString:@"true"]) {
             testOptions.iAdFrameworkEnabled = YES;
+        }
+    }
+    testOptions.adServicesFrameworkEnabled = NO; // default value -> NO - AdServices will not be used in test app by default
+    if ([parameters objectForKey:@"adServicesFrameworkEnabled"]) {
+        NSString *adServicesFrameworkEnabledStr = [parameters objectForKey:@"adServicesFrameworkEnabled"][0];
+        if ([adServicesFrameworkEnabledStr isEqualToString:@"true"]) {
+            testOptions.adServicesFrameworkEnabled = YES;
         }
     }
     if ([parameters objectForKey:@"enableSigning"]) {
@@ -276,6 +287,11 @@
         [adjustConfig setIsDeviceKnown:[deviceKnownS boolValue]];
     }
 
+    if ([parameters objectForKey:@"needsCost"]) {
+        NSString *needsCostS = [parameters objectForKey:@"needsCost"][0];
+        [adjustConfig setNeedsCost:[needsCostS boolValue]];
+    }
+
     if ([parameters objectForKey:@"eventBufferingEnabled"]) {
         NSString *eventBufferingEnabledS = [parameters objectForKey:@"eventBufferingEnabled"][0];
         [adjustConfig setEventBufferingEnabled:[eventBufferingEnabledS boolValue]];
@@ -285,7 +301,7 @@
         NSString *sendInBackgroundS = [parameters objectForKey:@"sendInBackground"][0];
         [adjustConfig setSendInBackground:[sendInBackgroundS boolValue]];
     }
-    
+
     if ([parameters objectForKey:@"allowIdfaReading"]) {
         NSString *allowIdfaReadingS = [parameters objectForKey:@"allowIdfaReading"][0];
         [adjustConfig setAllowIdfaReading:[allowIdfaReadingS boolValue]];
@@ -294,6 +310,11 @@
     if ([parameters objectForKey:@"allowiAdInfoReading"]) {
         NSString *allowiAdInfoReadingS = [parameters objectForKey:@"allowiAdInfoReading"][0];
         [adjustConfig setAllowiAdInfoReading:[allowiAdInfoReadingS boolValue]];
+    }
+
+    if ([parameters objectForKey:@"allowAdServicesInfoReading"]) {
+        NSString *allowAdServicesInfoReadingS = [parameters objectForKey:@"allowAdServicesInfoReading"][0];
+        [adjustConfig setAllowAdServicesInfoReading:[allowAdServicesInfoReadingS boolValue]];
     }
 
     if ([parameters objectForKey:@"userAgent"]) {
@@ -312,28 +333,28 @@
             [[ATAAdjustDelegateAttribution alloc] initWithTestLibrary:self.testLibrary
                                                           andExtraPath:self.extraPath];
     }
-    
+
     if ([parameters objectForKey:@"sessionCallbackSendSuccess"]) {
         NSLog(@"sessionCallbackSendSuccess detected");
         self.adjustDelegate =
             [[ATAAdjustDelegateSessionSuccess alloc] initWithTestLibrary:self.testLibrary
                                                              andExtraPath:self.extraPath];
     }
-    
+
     if ([parameters objectForKey:@"sessionCallbackSendFailure"]) {
         NSLog(@"sessionCallbackSendFailure detected");
         self.adjustDelegate =
         [[ATAAdjustDelegateSessionFailure alloc] initWithTestLibrary:self.testLibrary
                                                          andExtraPath:self.extraPath];
     }
-    
+
     if ([parameters objectForKey:@"eventCallbackSendSuccess"]) {
         NSLog(@"eventCallbackSendSuccess detected");
         self.adjustDelegate =
             [[ATAAdjustDelegateEventSuccess alloc] initWithTestLibrary:self.testLibrary
                                                            andExtraPath:self.extraPath];
     }
-    
+
     if ([parameters objectForKey:@"eventCallbackSendFailure"]) {
         NSLog(@"eventCallbackSendFailure detected");
         self.adjustDelegate =
@@ -543,6 +564,38 @@
 
 - (void)disableThirdPartySharing:(NSDictionary *)parameters {
     [Adjust disableThirdPartySharing];
+}
+
+- (void)thirdPartySharing:(NSDictionary *)parameters {
+    NSString *isEnabledS = [parameters objectForKey:@"isEnabled"][0];
+
+    NSNumber *isEnabled = nil;
+    if ([isEnabledS isEqualToString:@"true"]) {
+        isEnabled = [NSNumber numberWithBool:YES];
+    }
+    if ([isEnabledS isEqualToString:@"false"]) {
+        isEnabled = [NSNumber numberWithBool:NO];
+    }
+
+    ADJThirdPartySharing *adjustThirdPartySharing =
+        [[ADJThirdPartySharing alloc] initWithIsEnabledNumberBool:isEnabled];
+
+    if ([parameters objectForKey:@"granularOptions"]) {
+        NSArray *granularOptions = [parameters objectForKey:@"granularOptions"];
+        for (int i = 0; i < granularOptions.count; i = i + 3) {
+            NSString *partnerName = granularOptions[i];
+            NSString *key = granularOptions[i + 1];
+            NSString *value = granularOptions[i + 2];
+            [adjustThirdPartySharing addGranularOption:partnerName key:key value:value];
+        }
+    }
+
+    [Adjust trackThirdPartySharing:adjustThirdPartySharing];
+}
+
+- (void)measurementConsent:(NSDictionary *)parameters {
+    NSString *isEnabledS = [parameters objectForKey:@"isEnabled"][0];
+    [Adjust trackMeasurementConsent:[isEnabledS boolValue]];
 }
 
 - (void)trackSubscription:(NSDictionary *)parameters {

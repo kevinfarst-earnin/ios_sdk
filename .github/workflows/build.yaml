@@ -90,7 +90,6 @@ jobs:
           mv AdjustSdkIm.xcscheme Adjust.xcodeproj/xcshareddata/xcschemes
 
           carthage build --no-skip-current
-
           mkdir AdjustSdkImDynamic
           mv Carthage/Build/iOS/* AdjustSdkImDynamic
           zip -ry AdjustSdkIm.framework.zip AdjustSdkImDynamic/*
@@ -143,7 +142,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           path: frameworks
-
       - name: Upload static framework
         uses: actions/upload-release-asset@v1
         env:

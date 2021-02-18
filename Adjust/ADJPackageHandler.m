@@ -210,10 +210,8 @@ static const char * const kInternalQueueName    = "io.adjust.PackageQueue";
 - (void)addI:(ADJPackageHandler *)selfI
      package:(ADJActivityPackage *)newPackage
 {
-    [ADJUtil launchSynchronisedWithObject:[ADJPackageHandler class]
-                                    block:^{
-        [selfI.packageQueue addObject:newPackage];
-    }];
+    [selfI.packageQueue addObject:newPackage];
+
     [selfI.logger debug:@"Added package %d (%@)", selfI.packageQueue.count, newPackage];
     [selfI.logger verbose:@"%@", newPackage.extendedString];
 
@@ -312,47 +310,41 @@ static const char * const kInternalQueueName    = "io.adjust.PackageQueue";
 
 #pragma mark - private
 - (void)readPackageQueueI:(ADJPackageHandler *)selfI {
-    [ADJUtil launchSynchronisedWithObject:[ADJPackageHandler class]
-                                    block:^{
-        [NSKeyedUnarchiver setClass:[ADJActivityPackage class] forClassName:@"AIActivityPackage"];
+    [NSKeyedUnarchiver setClass:[ADJActivityPackage class] forClassName:@"AIActivityPackage"];
 
-        id object = [ADJUtil readObject:kPackageQueueFilename
-                             objectName:@"Package queue"
-                                  class:[NSArray class]
-                             syncObject:[ADJPackageHandler class]];
+    id object = [ADJUtil readObject:kPackageQueueFilename
+                         objectName:@"Package queue"
+                              class:[NSArray class]
+                         syncObject:[ADJPackageHandler class]];
 
-        if (object != nil) {
-            selfI.packageQueue = object;
-        } else {
-            selfI.packageQueue = [NSMutableArray array];
-        }
-    }];
+    if (object != nil) {
+        selfI.packageQueue = object;
+    } else {
+        selfI.packageQueue = [NSMutableArray array];
+    }
+
 }
 
 - (void)writePackageQueueS:(ADJPackageHandler *)selfS {
     if (selfS.packageQueue == nil) {
         return;
     }
-    
-    [ADJUtil launchSynchronisedWithObject:[ADJPackageHandler class]
-                                    block:^{
-        [ADJUtil writeObject:selfS.packageQueue
-                    fileName:kPackageQueueFilename
-                  objectName:@"Package queue"
-                  syncObject:[ADJPackageHandler class]];
-    }];
+
+    [ADJUtil writeObject:selfS.packageQueue
+                fileName:kPackageQueueFilename
+              objectName:@"Package queue"
+              syncObject:[ADJPackageHandler class]];
 }
 
 - (void)teardownPackageQueueS {
-    if (self.packageQueue == nil) {
-        return;
-    }
-    
-    [ADJUtil launchSynchronisedWithObject:[ADJPackageHandler class]
-                                    block:^{
+    @synchronized ([ADJPackageHandler class]) {
+        if (self.packageQueue == nil) {
+            return;
+        }
+
         [self.packageQueue removeAllObjects];
         self.packageQueue = nil;
-    }];
+    };
 }
 
 - (void)dealloc {
