@@ -63,7 +63,7 @@
 
     _appToken = appToken;
     _environment = environment;
-
+    
     // default values
     self.sendInBackground = NO;
     self.eventBufferingEnabled = NO;

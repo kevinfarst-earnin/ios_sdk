@@ -44,6 +44,7 @@ NSString * const ADJAdRevenueSourceTapdaq = @"tapdaq";
 
 NSString * const ADJUrlStrategyIndia = @"UrlStrategyIndia";
 NSString * const ADJUrlStrategyChina = @"UrlStrategyChina";
+NSString * const ADJDataResidencyEU = @"DataResidencyEU";
 
 @implementation AdjustTestOptions
 @end
@@ -638,7 +639,7 @@ static dispatch_once_t onceToken = 0;
         [ADJAdjustFactory setSdkClickHandlerBackoffStrategy:[ADJBackoffStrategy backoffStrategyWithType:ADJNoWait]];
         [ADJAdjustFactory setPackageHandlerBackoffStrategy:[ADJBackoffStrategy backoffStrategyWithType:ADJNoWait]];
     }
-
+    
     if (testOptions.enableSigning) {
         [ADJAdjustFactory enableSigning];
     }

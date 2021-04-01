@@ -1,5 +1,25 @@
-### Version 4.26.1 (5th February 2021)
+### Version 4.28.0 (1th April 2021)
+#### Changed
+- Removed legacy code.
 
+---
+
+### Version 4.27.1 (27th March 2021)
+#### Fixed
+- Fixed attribution value comparison logic which might cause same attribution value to be delivered into attribution callback.
+
+---
+
+### Version 4.27.0 (17th March 2021)
+#### Added
+- Added data residency feature. Support for EU data residency region is added. You can choose this setting by calling `setUrlStrategy:` method of `ADJConfig` instance with `ADJDataResidencyEU` parameter.
+
+#### Changed
+- Changed the measurement consent parameter name from `sharing` to `measurement`.
+
+---
+
+### Version 4.26.1 (5th February 2021)
 #### Fixed
 - Fixed nullability warnings.
 
@@ -448,7 +468,7 @@
 - Accessing private properties directly when copying.
 - Removed static framework build with no Bitcode support from releases page.
 - Updated docs.
-
+ 
 #### Fixed
 - Allow foreground/background timer to work in offline mode.
 - Use `synchronized` blocks to prevent write deadlock/contention.
@@ -492,7 +512,7 @@
 ---
 
 ### Version 4.8.0 (25th July 2016)
-#### Added
+#### Added 
 - Added tracking support for native web apps (no SDK version change).
 
 ### Changed
@@ -501,7 +521,7 @@
 ---
 
 ### Version 4.8.0 (18th July 2016)
-#### Added
+#### Added 
 - Added `sendAdWordsRequest` method on `Adjust` instance to support AdWords Search and Mobile Web tracking.
 
 ---

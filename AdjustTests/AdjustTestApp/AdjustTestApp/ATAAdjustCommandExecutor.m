@@ -286,7 +286,7 @@
         NSString *deviceKnownS = [parameters objectForKey:@"deviceKnown"][0];
         [adjustConfig setIsDeviceKnown:[deviceKnownS boolValue]];
     }
-
+    
     if ([parameters objectForKey:@"needsCost"]) {
         NSString *needsCostS = [parameters objectForKey:@"needsCost"][0];
         [adjustConfig setNeedsCost:[needsCostS boolValue]];
@@ -301,7 +301,7 @@
         NSString *sendInBackgroundS = [parameters objectForKey:@"sendInBackground"][0];
         [adjustConfig setSendInBackground:[sendInBackgroundS boolValue]];
     }
-
+    
     if ([parameters objectForKey:@"allowIdfaReading"]) {
         NSString *allowIdfaReadingS = [parameters objectForKey:@"allowIdfaReading"][0];
         [adjustConfig setAllowIdfaReading:[allowIdfaReadingS boolValue]];
@@ -333,28 +333,28 @@
             [[ATAAdjustDelegateAttribution alloc] initWithTestLibrary:self.testLibrary
                                                           andExtraPath:self.extraPath];
     }
-
+    
     if ([parameters objectForKey:@"sessionCallbackSendSuccess"]) {
         NSLog(@"sessionCallbackSendSuccess detected");
         self.adjustDelegate =
             [[ATAAdjustDelegateSessionSuccess alloc] initWithTestLibrary:self.testLibrary
                                                              andExtraPath:self.extraPath];
     }
-
+    
     if ([parameters objectForKey:@"sessionCallbackSendFailure"]) {
         NSLog(@"sessionCallbackSendFailure detected");
         self.adjustDelegate =
         [[ATAAdjustDelegateSessionFailure alloc] initWithTestLibrary:self.testLibrary
                                                          andExtraPath:self.extraPath];
     }
-
+    
     if ([parameters objectForKey:@"eventCallbackSendSuccess"]) {
         NSLog(@"eventCallbackSendSuccess detected");
         self.adjustDelegate =
             [[ATAAdjustDelegateEventSuccess alloc] initWithTestLibrary:self.testLibrary
                                                            andExtraPath:self.extraPath];
     }
-
+    
     if ([parameters objectForKey:@"eventCallbackSendFailure"]) {
         NSLog(@"eventCallbackSendFailure detected");
         self.adjustDelegate =

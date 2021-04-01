@@ -20,6 +20,7 @@ Read this in other languages: [English][en-readme], [中文][zh-readme], [日本
 * [부가 기능](#additional-features)
    * [AppTrackingTransparency framework](#att-framework)
       * [App-tracking authorisation wrapper](#ata-wrapper)
+      * [현재 승인 상태 받기](#ata-getter)
    * [SKAdNetwork framework](#skadn-framework)
    * [이벤트 추적](#event-tracking)
         * [매출 추적](#revenue-tracking)
@@ -76,13 +77,13 @@ iOS 개발용 Xcode를 사용한다는 가정하에 iOS 프로젝트에 Adjust S
 [CocoaPods][cocoapods]를 사용하는 경우, 다음 내용을 `Podfile`에 추가한 후 [해당 단계](#sdk-integrate)를 완료하세요.
 
 ```ruby
-pod 'Adjust', '~> 4.26.1'
+pod 'Adjust', '~> 4.28.0'
 ```
 
 또는:
 
 ```ruby
-pod 'Adjust', :git => 'https://github.com/adjust/ios_sdk.git', :tag => 'v4.26.1'
+pod 'Adjust', :git => 'https://github.com/adjust/ios_sdk.git', :tag => 'v4.28.0'
 ```
 
 ---
@@ -110,10 +111,11 @@ Apple은 iOS 8을 출시한 후, 임베디드 프레임워크로도 잘 알려�
 
 ### <a id="sdk-frameworks"></a>iOS 프레임워크 추가
 
-추가 iOS 프레임워크를 앱에 연결할 경우 Adjust SDK가 추가 정보를 얻을 수 있습니다. Adjust SDK 기능을 활성화하려는 경우 앱의 SDK 기능 유무에 따라 다음 프레임워크를 추가하세요.
+추가 iOS 프레임워크를 앱에 연결할 경우 애드저스트 SDK가 추가 정보를 얻을 수 있습니다. 애드저스트 SDK 기능을 활성화하려는 경우 앱의 SDK 기능 유무에 따라 다음의 프레임워크를 추가하고 이를 선택으로 설정하시기 바랍니다.
 
 - `AdSupport.framework` - SDK가 IDFA 값 및 (iOS 14 이전 버전) LAT 정보에 액세스하려면 이 프레임워크가 필요합니다.
-- `iAd.framework` - SDK가 실행 중인 ASA 캠페인에 대한 속성을 자동으로 처리하려면 이 프레임워크가 필요합니다.
+- `iAd.framework` - SDK가 자동으로 ASA 캠페인에 대한 어트리뷰션을 처리하려면 본 프레임워크가 필요합니다. (이후 `AdServices.framework`를 위해 지원 중지 예정)
+- `AdServices.framework` - SDK가 자동으로 ASA 캠페인에 대한 어트리뷰션을 처리하려면 본 프레임워크가 필요합니다.
 - `CoreTelephony.framework` - SDK가 현재의 무선 액세스 기술을 결정하려면 이 프레임워크가 필요합니다.
 - `StoreKit.framework` - `SKAdNetwork` 프레임워크에 액세스하고 Adjust SDK가 iOS 14 및 이후 버전에서 통신을 자동으로 처리하려면 이 프레임워크가 필요합니다.
 - `AppTrackingTranspaintency.framework` - iOS 14 및 이후 버전에서 SDK가 사용자의 추적 동의 다이얼로그를 래핑하고, 추적 여부에 대한 사용자의 동의 값에 대한 액세스를 위해 이 프레임워크가 필요합니다.
@@ -222,7 +224,7 @@ NSString *environment = ADJEnvironmentProduction;
     // Called when the extension is about to move from the active to inactive state.
     // This will happen when the user dissmises the extension, changes to a different
     // conversation or quits Messages.
-
+    
     // Use this method to release shared resources, save user data, invalidate timers,
     // and store enough state information to restore your extension to its current state
     // in case it is terminated later.
@@ -325,10 +327,20 @@ Adjust SDK를 사용하면 앱 관련 데이터에 액세스하는 데 대한 �
     }
 }];
 ```
+### <a id="ata-getter"></a>현재 승인 상태 받기
+
+현재 앱의 트래킹 승인 상태를 받으려면, `[Adjust appTrackingAuthorizationStatus]`를 호출하시기 바랍니다. 반환 값은 다음과 같습니다.
+
+* `0`: 유저가 아직 승인 요청을 받지 않음
+* `1`: 유저 기기가 제한됨
+* `2`: 유저가 IDFA 액세스를 거부함
+* `3`: 유저가 IDFA 액세스를 승인함
+* `-1`: 상태를 확인할 수 없음
+
 
 ### <a id="skadn-framework"></a>SKAdNetwork 프레임워크
 
-Adjust iOS SDK v4.23.0 이상을 설치했으며 iOS 14에서 앱을 실행하는 경우, SKAdNetwork와의 통신이 기본적으로 활성화되며 비활성화하도록 설정할 수 있습니다. 활성화하면 SDK가 실행될때 SKAdNetwork 어트리뷰션에 대해 Adjust가 자동으로 등록합니다. 이벤트가 Adjust 대시보드에서 전환 값을 수신하도록 설정된 경우, Adjust 백엔드가 전환 값 데이터를 SDK로 전송합니다. 그런 다음 SDK가 전환 값을 설정합니다. Adjust가 SKAdNetwork 콜백 데이터를 수신한 후에는 해당 정보가 대시보드에 표시됩니다.
+Adjust iOS SDK v4.23.0 이상을 설치했으며 iOS 14에서 앱을 실행하는 경우, SKAdNetwork와의 통신이 기본적으로 활성화되며 비활성화하도록 설정할 수 있습니다. 활성화하면 SDK가 실행될때 SKAdNetwork 어트리뷰션에 대해 Adjust가 자동으로 등록합니다. 이벤트가 Adjust 대시보드에서 전환 값을 수신하도록 설정된 경우, Adjust 백엔드가 전환 값 데이터를 SDK로 전송합니다. 그런 다음 SDK가 전환 값을 설정합니다. Adjust가 SKAdNetwork 콜백 데이터를 수신한 후에는 해당 정보가 대시보드에 표시됩니다. 
 
 Adjust SDK가 SKAdNetwork와 자동으로 통신하지 않도록 하려면 구성 객체에 대해 다음 메서드를 호출하여 해당 메서드를 사용하지 않도록 설정할 수 있습니다:
 
@@ -440,7 +452,7 @@ ADJEvent *event = [ADJEvent eventWithEventToken:@"abc123"];
 특별 파트너와 해당 파트너와의 연동에 대한 자세한 내용은 [특별 파트너 설명서][special-partners]를 참조하십시오.
 
 ### <a id="callback-id"></a>콜백 ID
-추적하고자 하는 각 이벤트에 개별 스트링 ID를 따로 붙일 수도 있습니다. 나중에 이벤트 성공/실패 콜백에서 해당 ID에 전달하여 이벤트 트래킹의 성공 또는 실패 여부를 추적할 수 있게 해 줍니다. `AdjustEvent` 인스턴스에서  `setCallbackId` 메서드를 호출하여 설정할 수 있습니다.
+추적하고자 하는 각 이벤트에 개별 스트링 ID를 따로 붙일 수도 있습니다. 나중에 이벤트 성공/실패 콜백에서 해당 ID에 전달하여 이벤트 트래킹의 성공 또는 실패 여부를 추적할 수 있게 해 줍니다. `AdjustEvent` 인스턴스에서  `setCallbackId` 메서드를 호출하여 설정할 수 있습니다. 
 
 ```objc
 ADJEvent *event = [ADJEvent eventWithEventToken:@"abc123"];
@@ -454,7 +466,7 @@ ADJEvent *event = [ADJEvent eventWithEventToken:@"abc123"];
 
 일부 파라미터는 Adjust SDK 이벤트 및 세션 발생시마다 전송을 위해 저장합니다. 어느 파라미터든 한 번 저장하면 로컬에 바로 저장되므로 매번 새로 추가할 필요가 없습니다. 같은 파라미터를 두 번 저장해도 효력이 없습니다.
 
-세션 파라미터를 최초 설치 이벤트시에 전송하려면, `[Adjust appDidLaunch:]`를 통해 Adjust SDK 런칭을 하기 전에 해당 파라미터를 호출해야 합니다. 설치 시 전송하지만 필요한 값은 런칭 후에야 들어갈 수 있게 하고 싶다면 Adjust SDK 런칭 시 [예약 시작](#delay-start)을 걸 수 있습니다.
+세션 파라미터를 최초 설치 이벤트시에 전송하려면, `[Adjust appDidLaunch:]`를 통해 Adjust SDK 런칭을 하기 전에 해당 파라미터를 호출해야 합니다. 설치 시 전송하지만 필요한 값은 런칭 후에야 들어갈 수 있게 하고 싶다면 Adjust SDK 런칭 시 [예약 시작](#delay-start)을 걸 수 있습니다. 
 
 ### <a id="session-callback-parameters">세션 콜백 파라미터
 
@@ -544,7 +556,7 @@ delegate(델리게이트) 콜백을 등록하여 트래커 어트리뷰션 변�
 ```objc
 [adjustConfig setDelegate:self];
 ```
-
+    
 델리게이트 콜백은 `ADJConfig` 인스턴스를 써서 구성하므로, `[Adjust appDidLaunch:adjustConfig]`를 호출하기 전에 `setDelegate`를 호출해야 합니다.
 
 SDK에 최종 속성 데이터가 수신되면 델리게이트 함수가 호출됩니다.
@@ -679,7 +691,7 @@ Adjust SDK를 오프라인 모드로 전환하여 Adjust 서버로 전송하는 
 
 Adjust SDK 서명이 클라이언트 간에 사용 가능합니다. 이 기능을 사용해 보고자 할 경우 계정 매니저에게 연락해 주십시오.
 
-SDK 서명이 계정에서 이미 사용 가능 상태로 Adjust 대시보드에서 App Secret에 억세스할 수 있는 상태라면, 아래 매서드를 사용하여 SDK 서명을 앱에 연동하십시오.
+SDK 서명이 계정에서 이미 사용 가능 상태로 Adjust 대시보드에서 App Secret에 억세스할 수 있는 상태라면, 아래 매서드를 사용하여 SDK 서명을 앱에 연동하십시오. 
 
 `AdjustConfig` 인스턴스에서 `setAppSecret`를 호출하면 App Secret이 설정됩니다.
 
@@ -729,7 +741,7 @@ NSString *adid = [Adjust adid];
 ADJAttribution *attribution = [Adjust attribution];
 ```
 
-**주의**: 사용자의 현재 어트리뷰션 정보는 Adjust 백엔드가 앱 설치를 추적하여 최초 어트리뷰션 콜백이 촉발된 후에만 얻을 수 있습니다. 그 순간부터 Adjus SDK는 사용자 어트리뷰션 정보를 갖게 되며 이 메소드로 억세스할 수 있습니다. 따라서 SDK가 초기화되고 최초 어트리뷰션 콜백이 촉발되기 전에는 사용자 어트리뷰션 값에 액세스가 **불가능합니다**.
+**주의**: 사용자의 현재 어트리뷰션 정보는 Adjust 백엔드가 앱 설치를 추적하여 최초 어트리뷰션 콜백이 촉발된 후에만 얻을 수 있습니다. 그 순간부터 Adjus SDK는 사용자 어트리뷰션 정보를 갖게 되며 이 메소드로 억세스할 수 있습니다. 따라서 SDK가 초기화되고 최초 어트리뷰션 콜백이 촉발되기 전에는 사용자 어트리뷰션 값에 액세스가 **불가능합니다**. 
 
 ### <a id="push-token">푸시 토큰
 
@@ -771,7 +783,7 @@ URL에서 앱으로 딥링크를 거는 옵션이 있는 Adjust 트래커 URL을
 
 #### <a id="deeplinking-standard">표준 딥링크 시나리오
 
-사용자가 앱을 설치하고 딥링크 정보가 들어간 트래커 URL을 클릭할 경우, 앱이 열리고 딥링크 내용이 앱으로 전달되어 이를 분석하고 다음 행동을 결정하게 됩니다. Apple은 iOS 9를 런칭하면서 앱에서의 딥링크 취급 방식을 바꿨습니다. 앱에 어떤 상황을 사용하고자 하는지에 따라 (또는 다양한 장치를 지원하기 위해 두 가지 다 사용하려 할 경우) 앱이 다음 상황 중 하나 또는 두 가지 다 취급할 수 있도록 설정해야 합니다.
+사용자가 앱을 설치하고 딥링크 정보가 들어간 트래커 URL을 클릭할 경우, 앱이 열리고 딥링크 내용이 앱으로 전달되어 이를 분석하고 다음 행동을 결정하게 됩니다. Apple은 iOS 9를 런칭하면서 앱에서의 딥링크 취급 방식을 바꿨습니다. 앱에 어떤 상황을 사용하고자 하는지에 따라 (또는 다양한 장치를 지원하기 위해 두 가지 다 사용하려 할 경우) 앱이 다음 상황 중 하나 또는 두 가지 다 취급할 수 있도록 설정해야 합니다. 
 
 #### <a id="deeplinking-setup-old">iOS 8 이전 버전에서의 딥링크
 
@@ -793,7 +805,7 @@ iOS 8 이하 버전 장치에서 딥링크는 사용자 설정 URL 스킴 설정
 }
 ```
 
-이렇게 하면 iOS 8 이하 버전을 사용하는 iOS 기기에서 딥링크를 성공적으로 설정할 수 있습니다.
+이렇게 하면 iOS 8 이하 버전을 사용하는 iOS 기기에서 딥링크를 성공적으로 설정할 수 있습니다.  
 
 #### <a id="deeplinking-setup-new">iOS 9 이후 버전에서의 딥링크
 
@@ -825,7 +837,7 @@ Apple Developer Portal에서 앱 `Associated Domains`를 활성화한 후, 이�
 }
 ```
 
-이렇게 하면 iOS 9 이상 버전을 사용하는 iOS 기기에서 딥링크를 성공적으로 설정할 수 있습니다.
+이렇게 하면 iOS 9 이상 버전을 사용하는 iOS 기기에서 딥링크를 성공적으로 설정할 수 있습니다.  
 
 코드에 사용한 사용자 설정 로직이 기존 스타일 사용자 설정 URL 스킴 포맷에 도착하기 위해 딥링크 정보가 필요한 경우, Adjust는 유니버설 링크를 기존 스타일 딥링크 URL로 변환하는 도움 함수를 제공합니다. 유니버설 링크 및 딥링크 접두어로 쓸 사용자 설정 URL 스킴명으로 이 메서드를 호출할 수 있습니다. 그러면 Adjust가 사용자 설정 URL 스킴 딥링크를 생성해 드립니다.
 
@@ -868,11 +880,11 @@ Apple Developer Portal에서 앱 `Associated Domains`를 활성화한 후, 이�
 
 #### <a id="deeplinking-reattribution">딥링크를 통한 리어트리뷰션(reattribution)
 
-Adjust는 딥링크를 사용하여 광고 캠페인 리인게이지먼트(re-engagement)를 수행할 수 있게 해줍니다. 이에 대한 자세한 정보는 [관련 문서][reattribution-with-deeplinks]를 참조하세요.
+Adjust는 딥링크를 사용하여 광고 캠페인 리인게이지먼트(re-engagement)를 수행할 수 있게 해줍니다. 이에 대한 자세한 정보는 [관련 문서][reattribution-with-deeplinks]를 참조하세요. 
 
 이 기능을 사용 중이라면, 사용자를 올바로 리어트리뷰트하기 위해 앱에서 호출을 하나 더 수행해야 합니다.
 
-앱에서 딥링크 내용을 수신했다면, `appWillOpenUrl` 메서드 호출을 추가하세요. 이 호출이 이루어지면 Adjust SDK는 딥링크 내에 새로운 어트리뷰션 정보가 있는지 확인하고, 새 정보가 있으면 Adjust 백엔드로 송신합니다. 딥링크 정보가 담긴 Adjust 트래커 URL을 클릭한 사용자를 리어트리뷰트해야 할 경우, 앱에서 해당 사용자의 새 어트리뷰션 정보로 [어트리뷰션 콜백](#attribution-callback)이 촉발되는 것을 확인할 수 있습니다.
+앱에서 딥링크 내용을 수신했다면, `appWillOpenUrl` 메서드 호출을 추가하세요. 이 호출이 이루어지면 Adjust SDK는 딥링크 내에 새로운 어트리뷰션 정보가 있는지 확인하고, 새 정보가 있으면 Adjust 백엔드로 송신합니다. 딥링크 정보가 담긴 Adjust 트래커 URL을 클릭한 사용자를 리어트리뷰트해야 할 경우, 앱에서 해당 사용자의 새 어트리뷰션 정보로 [어트리뷰션 콜백](#attribution-callback)이 촉발되는 것을 확인할 수 있습니다. 
 
 모든 iOS 버전에서 딥링크 리어트리뷰션을 지원하기 위한 `appWillOpenUrl` 호출은 다음과 같이 이루어집니다.
 
@@ -880,7 +892,7 @@ Adjust는 딥링크를 사용하여 광고 캠페인 리인게이지먼트(re-en
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     // url object contains your deep link content
-
+    
     [Adjust appWillOpenUrl:url];
 
     // Apply your logic to determine the return value of this method

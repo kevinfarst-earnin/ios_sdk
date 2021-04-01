@@ -95,7 +95,7 @@ static NSString * const PREFS_KEY_ADSERVICES_TRACKED = @"adj_adservices_tracked"
 
 + (void)saveiAdErrorKey:(NSString *)key {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-
+    
     NSMutableDictionary<NSString *, NSNumber *> *errors = [[userDefaults dictionaryForKey:PREFS_KEY_IAD_ERRORS] mutableCopy];
     if (errors) {
         NSNumber *value = errors[key];
@@ -104,12 +104,12 @@ static NSString * const PREFS_KEY_ADSERVICES_TRACKED = @"adj_adservices_tracked"
         } else {
             value = @([value integerValue] + 1);
         }
-
+        
         errors[key] = value;
     } else {
         errors[key] = @(1);
     }
-
+    
     [userDefaults setObject:errors forKey:PREFS_KEY_IAD_ERRORS];
 }
 

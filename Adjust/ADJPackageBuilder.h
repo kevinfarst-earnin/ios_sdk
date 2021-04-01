@@ -83,10 +83,6 @@
 
 + (BOOL)isAdServicesPackage:(ADJActivityPackage * _Nullable)activityPackage;
 
-+ (void)parameters:(NSMutableDictionary *)parameters
-            setInt:(int)value
-            forKey:(NSString *)key;
-
 @end
 // TODO change to ADJ...
 extern NSString * _Nullable const ADJAttributionTokenParameter;

@@ -60,6 +60,7 @@ Read this in other languages: [English][en-readme], [中文][zh-readme], [日本
       * [Deep linking on iOS 9 and later](#deeplinking-setup-new)
       * [Deferred deep linking scenario](#deeplinking-deferred)
       * [Reattribution via deep links](#deeplinking-reattribution)
+   * [Data residency](#data-residency)
 * [Troubleshooting](#troubleshooting)
    * [Issues with delayed SDK initialisation](#ts-delayed-init)
    * [I'm seeing "Adjust requires ARC" error](#ts-arc)
@@ -83,13 +84,13 @@ We will describe the steps to integrate the Adjust SDK into your iOS project. We
 If you're using [CocoaPods][cocoapods], you can add the following line to your `Podfile` and continue from [this step](#sdk-integrate):
 
 ```ruby
-pod 'Adjust', '~> 4.26.1'
+pod 'Adjust', '~> 4.28.0'
 ```
 
 or:
 
 ```ruby
-pod 'Adjust', :git => 'https://github.com/adjust/ios_sdk.git', :tag => 'v4.26.1'
+pod 'Adjust', :git => 'https://github.com/adjust/ios_sdk.git', :tag => 'v4.28.0'
 ```
 
 ---
@@ -128,8 +129,8 @@ If you are having `iMessage` app, you can use the Adjust SDK with it as well wit
 Adjust SDK is able to get additional information in case you link additional iOS frameworks to your app. Please, add following frameworks in case you want to enable Adjust SDK features based on their presence in your app and mark them as optional:
 
 - `AdSupport.framework` - This framework is needed so that SDK can access to IDFA value and (prior to iOS 14) LAT information.
-- `iAd.framework` - This framework is needed so that SDK can automatically handle attribution for ASA campaings you might be running (to be deprecated in the future in favour of `AdServices.framework`).
-- `AdServices.framework` - This framework is needed so that SDK can automatically handle attribution for ASA campaings you might be running.
+- `iAd.framework` - This framework is needed so that SDK can automatically handle attribution for ASA campaigns you might be running.
+- `AdServices.framework` - For devices running iOS 14.3 or higher, this framework allows the SDK to automatically handle attribution for ASA campaigns. It is required when leveraging the Apple Ads Attribution API.
 - `CoreTelephony.framework` - This framework is needed so that SDK can determine current radio access technology.
 - `StoreKit.framework` - This framework is needed for access to `SKAdNetwork` framework and for Adjust SDK to handle communication with it automatically in iOS 14 or later.
 - `AppTrackingTransparency.framework` - This framework is needed in iOS 14 and later for SDK to be able to wrap user's tracking consent dialog and access to value of the user's consent to be tracked or not.
@@ -239,7 +240,7 @@ Add call to `trackSubsessionEnd` inside of `willResignActiveWithConversation:` m
     // Called when the extension is about to move from the active to inactive state.
     // This will happen when the user dissmises the extension, changes to a different
     // conversation or quits Messages.
-
+    
     // Use this method to release shared resources, save user data, invalidate timers,
     // and store enough state information to restore your extension to its current state
     // in case it is terminated later.
@@ -619,9 +620,9 @@ Currently we support the below `source` parameter values:
 
 ### <a id="subscriptions"></a>Subscription tracking
 
-**Note**: This feature is only available in the native SDK v4.22.0 and above. We recommend using at least version 4.22.1.
+**Note**: This feature is only available in the native SDK v4.22.0 and above. We recommend using at least version 4.22.1. 
 
-**Important**: The following steps only set up subscription tracking within the SDK. To complete setup, certain app-specific information must be added within Adjust’s internal interface. An Adjust representative must take this action: please contact support@adjust.com or your Technical Account Manager.
+**Important**: The following steps only set up subscription tracking within the SDK. To complete setup, certain app-specific information must be added within Adjust’s internal interface. An Adjust representative must take this action: please contact support@adjust.com or your Technical Account Manager. 
 
 You can track App Store subscriptions and verify their validity with the Adjust SDK. After a subscription has been successfully purchased, make the following call to the Adjust SDK:
 
@@ -1012,7 +1013,7 @@ The call to `appWillOpenUrl` should be done like this to support deep linking re
 ```objc
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary *)options {
     // url object contains your deep link content
-
+    
     [Adjust appWillOpenUrl:url];
 
     // Apply your logic to determine the return value of this method
@@ -1037,6 +1038,12 @@ The call to `appWillOpenUrl` should be done like this to support deep linking re
     // return NO;
 }
 ```
+
+### <a id="data-residency"></a>Data residency
+
+In order to enable data residency feature, make sure to make a call to `setUrlStrategy:` method of the `ADJConfig` instance with one of the following constants:
+
+- `ADJDataResidencyEU` for EU data residency region.
 
 ## <a id="troubleshooting"></a>Troubleshooting
 

@@ -25,13 +25,13 @@ adjust SDKをiOSプロジェクトに連携する手順を説明します。
 [こちらの手順](#sdk-integrate)に進んでください。
 
 ```ruby
-pod 'Adjust', '~> 4.26.1'
+pod 'Adjust', '~> 4.28.0'
 ```
 
 または
 
 ```ruby
-pod 'Adjust', :git => 'https://github.com/adjust/ios_sdk.git', :tag => 'v4.26.1'
+pod 'Adjust', :git => 'https://github.com/adjust/ios_sdk.git', :tag => 'v4.28.0'
 ```
 
 ---
@@ -53,8 +53,8 @@ adjust SDKはフレームワークとしてプロジェクトに追加するこ�
 * `AdjustSdkTv.framework.zip`
 * `AdjustSdkIm.framework.zip`
 
-iOS 8リリース以降、AppleはDynamic Frameworks (Embedded Framework)を導入しています。
-iOS 8以降の端末をターゲットにしている場合は、adjustの SDK dynamic frameworkが使用できます。
+iOS 8リリース以降、AppleはDynamic Frameworks (Embedded Framework)を導入しています。 
+iOS 8以降の端末をターゲットにしている場合は、adjustの SDK dynamic frameworkが使用できます。 
 StaticかDynamicフレームワークを選択し、プロジェクトに追加してください。
 
 `tvOS`アプリの場合もadjust SDKの利用が可能です。
@@ -62,15 +62,16 @@ StaticかDynamicフレームワークを選択し、プロジェクトに追加�
 
 同様に`iMessage`アプリの場合もadjust SDKの利用が可能です。`AdjustSdkIm.framework.zip`アーカイブからIMフレームワークを展開してください。
 
-### <a id="sdk-frameworks"></a>iOSフレームワークを追加する
+### <a id="sdk-frameworks"></a>iOS frameworksを追加する
 
-アプリにiOSフレームワークを追加で連携した場合、Adjust SDKはその情報を呼び出し、取得することができます。iOSフレームワークに対応するAdjust SDKの機能を有効化するには、以下のフレームワークをアプリに追加してください。
+アプリにiOS frameworksを追加で連携した場合、Adjust SDKはその情報を呼び出し、取得することができます。iOS frameworksに対応するAdjust SDKの機能を有効化し、それらの機能をオプションとしてマークするには、以下の frameworksをアプリに追加してください。
 
-- `AdSupport.framework` - SDKがIDFA値および（iOS 14より前の）LAT情報を呼び出せるようにします。
-- `iAd.framework` - SDKが実行中のASAキャンペーンのアトリビューションを自動的に処理できるようにします。
+- `AdSupport.framework` - SDKがIDFA値および（iOS 14より前の）LAT(Limited Ad Tracking)情報を呼び出せるようにします。
+- `iAd.framework` - SDKが配信中のASA（Apple Search Ads）キャンペーンのアトリビューションを自動的に処理できるようにします（将来的には廃止されて`AdServices.framework`に置き換わる予定です）。
+- `AdServices.framework`- SDKが実行中のASAキャンペーンのアトリビューションを自動的に処理できるようにします。
 - `CoreTelephony.framework`- SDKが現在のRadio Access Technology（無線アクセス技術）を判別できるようにします。
-- `StoreKit.framework`- iOS 14またはそれ以降において、このフレームワークは「SKAdNetwork」のフレームワークにアクセスし、「SKAdNetwork」との通信をAdjust SDKで自動的に処理できるようにします。
-- `AppTrackingTransparency.framework` -iOS 14またはそれ以降において、このフレームワークはSDKがトラッキングに対するユーザー同意を確認するダイアログをラップし、ユーザーの許諾状況を示す値にアクセスできるようにします。
+- `StoreKit.framework`- iOS 14またはそれ以降において、このframeworkは` SKAdNetwork` のframeworkにアクセスし、「SKAdNetwork」との通信をAdjust SDKで自動的に処理できるようにします。
+- `AppTrackingTransparency.framework` -iOS 14またはそれ以降において、このframeworkはSDKがトラッキングに対するユーザー同意を確認するダイアログをラップし、ユーザーの許諾状況を示す値にアクセスできるようにします。
 
 #### <a id="sdk-integrate"></a>SDKをアプリに実装する
 
@@ -181,7 +182,7 @@ NSString *environment = ADJEnvironmentProduction;
     // Called when the extension is about to move from the active to inactive state.
     // This will happen when the user dissmises the extension, changes to a different
     // conversation or quits Messages.
-
+    
     // Use this method to release shared resources, save user data, invalidate timers,
     // and store enough state information to restore your extension to its current state
     // in case it is terminated later.
@@ -290,7 +291,7 @@ Adjust SDKは、アプリトラッキング承認ラッパーを使用して、�
 
 ### <a id="skadn-framework"></a>SKAdNetworkフレームワーク
 
-Adjust iOS SDK v4.23.0以上を実装済みであり、アプリがiOS14で実行されている場合、SKAdNetworkとの通信はデフォルトでONに設定されますが、選択によりOFFにすることもできます。ONに設定すると、SDKの初期化時にSKAdNetworkのアトリビューションがAdjustによって自動的に登録されます。conversion value（コンバージョン値）を受信するためにAdjust管理画面でイベントを設定する場合、conversaion valueのデータはAdjustバックエンドからSDKに送信されます。その後、SDKによってconversion valueが設定されます。SKAdNetworkコールバックデータをAdjustで受信した後、このデータが管理画面に表示されます。
+Adjust iOS SDK v4.23.0以上を実装済みであり、アプリがiOS14で実行されている場合、SKAdNetworkとの通信はデフォルトでONに設定されますが、選択によりOFFにすることもできます。ONに設定すると、SDKの初期化時にSKAdNetworkのアトリビューションがAdjustによって自動的に登録されます。conversion value（コンバージョン値）を受信するためにAdjust管理画面でイベントを設定する場合、conversaion valueのデータはAdjustバックエンドからSDKに送信されます。その後、SDKによってconversion valueが設定されます。SKAdNetworkコールバックデータをAdjustで受信した後、このデータが管理画面に表示されます。 
 
 Adjust SDKがSKAdNetworkと自動的に通信しないようにしたい場合は、設定オブジェクトで次のメソッドを呼び出すことによって通信を無効化できます。
 
@@ -673,7 +674,7 @@ adjust SDKがオンラインモードに戻った時、保存されていた情�
 [Adjust gdprForgetMe];
 ```
 
-この情報を受け取ると、Adjustはユーザーのデータを消去し、Adjust SDKはユーザーの追跡を停止します。この削除された端末からのリクエストは今後、Adjustに送信されません。
+この情報を受け取ると、Adjustはユーザーのデータを消去し、Adjust SDKはユーザーの追跡を停止します。この削除された端末からのリクエストは今後、Adjustに送信されません。 
 
 #### <a id="background-tracking">バックグラウンドでのトラッキング
 
@@ -875,7 +876,7 @@ adjustはディープリンクを使ったリエンゲージメントキャン�
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     // url object contains your deep link content
-
+    
     [Adjust appWillOpenUrl:url];
 
     // Apply your logic to determine the return value of this method
@@ -1189,6 +1190,6 @@ Copyright (c) 2012-2019 Adjust GmbH, http://www.adjust.com
 上記の著作権表示および本許諾表示を、ソフトウェアのすべての複製または重要な部分に記載するものとします。
 
 ソフトウェアは「現状のまま」で、明示であるか暗黙であるかを問わず、何らの保証もなく提供されます。
-ここでいう保証とは、商品性、特定の目的への適合性、および権利非侵害についての保証も含みますが、それに限定されるものではありません。
+ここでいう保証とは、商品性、特定の目的への適合性、および権利非侵害についての保証も含みますが、それに限定されるものではありません。 
 作者または著作権者は、契約行為、不法行為、またはそれ以外であろうと、ソフトウェアに起因または関連し、
 あるいはソフトウェアの使用またはその他の扱いによって生じる一切の請求、損害、その他の義務について何らの責任も負わないものとします。

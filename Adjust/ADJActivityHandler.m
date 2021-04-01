@@ -137,7 +137,7 @@ typedef NS_ENUM(NSInteger, AdjADClientError) {
         [ADJAdjustFactory.logger error:@"AdjustConfig not initialized correctly"];
         return nil;
     }
-
+    
     // check if ASA and IDFA tracking were switched off and warn just in case
     if (adjustConfig.allowIdfaReading == NO) {
         [ADJAdjustFactory.logger warn:@"IDFA reading has been switched off"];
@@ -167,7 +167,7 @@ typedef NS_ENUM(NSInteger, AdjADClientError) {
     // read files to have sync values available
     [self readAttribution];
     [self readActivityState];
-
+    
     // register SKAdNetwork attribution
     [self registerForSKAdNetworkAttribution];
 
@@ -406,7 +406,7 @@ typedef NS_ENUM(NSInteger, AdjADClientError) {
                                 error:(NSError *)error {
     if (![ADJUtil isNull:error]) {
         [self.logger warn:@"Unable to read AdServices details"];
-
+        
         // 3 == platform not supported
         if (error.code != 3 && self.adServicesRetriesLeft > 0) {
             self.adServicesRetriesLeft = self.adServicesRetriesLeft - 1;
@@ -451,9 +451,9 @@ typedef NS_ENUM(NSInteger, AdjADClientError) {
             case AdjADClientErrorRequestServerError:
             case AdjADClientErrorRequestNetworkError:
             case AdjCustomErrorTimeout: {
-
+                
                 [self saveiAdErrorCode:error.code];
-
+                
                 int64_t iAdRetryDelay = 0;
                 switch (self.iAdRetriesLeft) {
                     case 2:
@@ -535,7 +535,7 @@ typedef NS_ENUM(NSInteger, AdjADClientError) {
             codeKey = @"";
             break;
     }
-
+    
     if (![codeKey isEqualToString:@""]) {
         [ADJUserDefaults saveiAdErrorKey:codeKey];
     }
@@ -788,7 +788,7 @@ typedef NS_ENUM(NSInteger, AdjADClientError) {
 
     ADJActivityPackage *infoPackage = [infoBuilder buildInfoPackage:@"att"];
     [selfI.packageHandler addPackage:infoPackage];
-
+    
     if (selfI.adjustConfig.eventBufferingEnabled) {
         [selfI.logger info:@"Buffered event %@", infoPackage.suffix];
     } else {
@@ -995,7 +995,7 @@ preLaunchActions:(ADJSavedPreLaunch*)preLaunchActions
     if (selfI.adjustConfig.allowiAdInfoReading == YES) {
         [selfI checkForiAdI:selfI];
     }
-
+    
     if (selfI.adjustConfig.allowAdServicesInfoReading == YES) {
         [selfI checkForAdServicesAttributionI:selfI];
     }
@@ -1717,7 +1717,7 @@ preLaunchActions:(ADJSavedPreLaunch*)preLaunchActions
     if (selfI.adjustConfig.allowAdServicesInfoReading == NO) {
         return NO;
     }
-
+    
     // Fetch if no attribution OR not sent to backend yet
     return (selfI.attribution == nil || ![ADJUserDefaults getAdServicesTracked]);
 }
@@ -1725,9 +1725,11 @@ preLaunchActions:(ADJSavedPreLaunch*)preLaunchActions
 - (void)checkForAdServicesAttributionI:(ADJActivityHandler *)selfI {
     if (@available(iOS 14.3, tvOS 14.3, *)) {
         if ([selfI shouldFetchAdServicesI:selfI]) {
-            NSError *error = nil;
-            NSString *token = [[UIDevice currentDevice] adjFetchAdServicesAttribution:&error];
-            [selfI setAdServicesAttributionToken:token error:error];
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSError *error = nil;
+                NSString *token = [[UIDevice currentDevice] adjFetchAdServicesAttribution:&error];
+                [selfI setAdServicesAttributionToken:token error:error];
+            });
         }
     }
 }
@@ -2636,7 +2638,7 @@ sdkClickHandlerOnly:(BOOL)sdkClickHandlerOnly
         [selfI.logger verbose:@"Found transaction ID in %@", selfI.activityState.transactionIds];
         return NO; // transaction ID found -> used already
     }
-
+    
     [selfI.activityState addTransactionId:transactionId];
     [selfI.logger verbose:@"Added transaction ID %@", selfI.activityState.transactionIds];
     // activity state will get written by caller
@@ -2671,13 +2673,13 @@ sdkClickHandlerOnly:(BOOL)sdkClickHandlerOnly
         return;
     }
     id<ADJLogger> logger = [ADJAdjustFactory logger];
-
+    
     Class skAdNetwork = NSClassFromString(@"SKAdNetwork");
     if (skAdNetwork == nil) {
         [logger warn:@"StoreKit framework not found in user's app (SKAdNetwork not found)"];
         return;
     }
-
+    
     SEL registerAttributionSelector = NSSelectorFromString(@"registerAppForAdNetworkAttribution");
     if ([skAdNetwork respondsToSelector:registerAttributionSelector]) {
 #pragma clang diagnostic push
@@ -2701,7 +2703,7 @@ sdkClickHandlerOnly:(BOOL)sdkClickHandlerOnly
     if (!conversionValue) {
         return;
     }
-
+    
     [ADJUtil updateSkAdNetworkConversionValue:conversionValue];
 }
 

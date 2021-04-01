@@ -2,8 +2,8 @@
 var localBaseUrl = 'http://127.0.0.1:8080';
 var localGdprUrl = 'http://127.0.0.1:8080';
 // device
-// var localBaseUrl = 'http://192.168.86.37:8080';
-// var localGdprUrl = 'http://192.168.86.37:8080';
+// var localBaseUrl = 'http://192.168.86.75:8080';
+// var localGdprUrl = 'http://192.168.86.75:8080';
 
 // local reference of the command executor
 // originally it was this.adjustCommandExecutor of TestLibraryBridge var
@@ -204,7 +204,7 @@ AdjustCommandExecutor.prototype.config = function(params) {
         var defaultTracker = getFirstValue(params, 'defaultTracker');
         adjustConfig.setDefaultTracker(defaultTracker);
     }
-
+    
     if ('externalDeviceId' in params) {
         var externalDeviceId = getFirstValue(params, 'externalDeviceId');
         adjustConfig.setExternalDeviceId(externalDeviceId);
@@ -231,25 +231,25 @@ AdjustCommandExecutor.prototype.config = function(params) {
         var deviceKnown = deviceKnownS == 'true';
         adjustConfig.setIsDeviceKnown(deviceKnown);
     }
-
+    
     if ('needsCost' in params) {
         var needsCostS = getFirstValue(params, 'needsCost');
         var needsCost = needsCostS == 'true';
         adjustConfig.setNeedsCost(needsCost);
     }
-
+    
     if ('allowiAdInfoReading' in params) {
         var allowiAdInfoReadingS = getFirstValue(params, 'allowiAdInfoReading');
         var allowiAdInfoReading = allowiAdInfoReadingS == 'true';
         adjustConfig.setAllowiAdInfoReading(allowiAdInfoReading);
     }
-
+    
     if ('allowAdServicesInfoReading' in params) {
         var allowAdServicesInfoReadingS = getFirstValue(params, 'allowAdServicesInfoReading');
         var allowAdServicesInfoReading = allowAdServicesInfoReadingS == 'true';
         adjustConfig.setAllowAdServicesInfoReading(allowAdServicesInfoReading);
     }
-
+    
     if ('allowIdfaReading' in params) {
         var allowIdfaReadingS = getFirstValue(params, 'allowIdfaReading');
         var allowIdfaReading = allowIdfaReadingS == 'true';

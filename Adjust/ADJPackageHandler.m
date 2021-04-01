@@ -256,10 +256,7 @@ static const char * const kInternalQueueName    = "io.adjust.PackageQueue";
 
 - (void)sendNextI:(ADJPackageHandler *)selfI {
     if ([selfI.packageQueue count] > 0) {
-        [ADJUtil launchSynchronisedWithObject:[ADJPackageHandler class]
-                                        block:^{
-            [selfI.packageQueue removeObjectAtIndex:0];
-        }];
+        [selfI.packageQueue removeObjectAtIndex:0];
         [selfI writePackageQueueS:selfI];
     }
 
@@ -274,49 +271,43 @@ static const char * const kInternalQueueName    = "io.adjust.PackageQueue";
     [selfI.logger verbose:@"Session callback parameters: %@", sessionParameters.callbackParameters];
     [selfI.logger verbose:@"Session partner parameters: %@", sessionParameters.partnerParameters];
 
-    [ADJUtil launchSynchronisedWithObject:[ADJPackageHandler class]
-                                    block:^{
-        for (ADJActivityPackage * activityPackage in selfI.packageQueue) {
-            // callback parameters
-            NSDictionary * mergedCallbackParameters = [ADJUtil mergeParameters:sessionParameters.callbackParameters
-                                                                        source:activityPackage.callbackParameters
-                                                                 parameterName:@"Callback"];
+    for (ADJActivityPackage * activityPackage in selfI.packageQueue) {
+        // callback parameters
+        NSDictionary * mergedCallbackParameters = [ADJUtil mergeParameters:sessionParameters.callbackParameters
+                                                                    source:activityPackage.callbackParameters
+                                                             parameterName:@"Callback"];
 
-            [ADJPackageBuilder parameters:activityPackage.parameters
-                            setDictionary:mergedCallbackParameters
-                                   forKey:@"callback_params"];
+        [ADJPackageBuilder parameters:activityPackage.parameters
+                        setDictionary:mergedCallbackParameters
+                               forKey:@"callback_params"];
 
-            // partner parameters
-            NSDictionary * mergedPartnerParameters = [ADJUtil mergeParameters:sessionParameters.partnerParameters
-                                                                       source:activityPackage.partnerParameters
-                                                                parameterName:@"Partner"];
+        // partner parameters
+        NSDictionary * mergedPartnerParameters = [ADJUtil mergeParameters:sessionParameters.partnerParameters
+                                                                   source:activityPackage.partnerParameters
+                                                            parameterName:@"Partner"];
 
-            [ADJPackageBuilder parameters:activityPackage.parameters
-                            setDictionary:mergedPartnerParameters
-                                   forKey:@"partner_params"];
-        }
-    }];
+        [ADJPackageBuilder parameters:activityPackage.parameters
+                        setDictionary:mergedPartnerParameters
+                               forKey:@"partner_params"];
+    }
 
     [selfI writePackageQueueS:selfI];
 }
 
 - (void)flushI:(ADJPackageHandler *)selfI {
-    [ADJUtil launchSynchronisedWithObject:[ADJPackageHandler class]
-                                    block:^{
-        [selfI.packageQueue removeAllObjects];
-    }];
+    [selfI.packageQueue removeAllObjects];
     [selfI writePackageQueueS:selfI];
 }
 
 #pragma mark - private
 - (void)readPackageQueueI:(ADJPackageHandler *)selfI {
     [NSKeyedUnarchiver setClass:[ADJActivityPackage class] forClassName:@"AIActivityPackage"];
-
+    
     id object = [ADJUtil readObject:kPackageQueueFilename
                          objectName:@"Package queue"
                               class:[NSArray class]
                          syncObject:[ADJPackageHandler class]];
-
+    
     if (object != nil) {
         selfI.packageQueue = object;
     } else {
@@ -329,7 +320,7 @@ static const char * const kInternalQueueName    = "io.adjust.PackageQueue";
     if (selfS.packageQueue == nil) {
         return;
     }
-
+    
     [ADJUtil writeObject:selfS.packageQueue
                 fileName:kPackageQueueFilename
               objectName:@"Package queue"
@@ -341,10 +332,10 @@ static const char * const kInternalQueueName    = "io.adjust.PackageQueue";
         if (self.packageQueue == nil) {
             return;
         }
-
+        
         [self.packageQueue removeAllObjects];
         self.packageQueue = nil;
-    };
+    }
 }
 
 - (void)dealloc {

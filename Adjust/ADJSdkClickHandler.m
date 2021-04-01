@@ -146,17 +146,17 @@ activityHandler:(id<ADJActivityHandler>)activityHandler
         [selfI sendNextSdkClick];
         return;
     }
-
+    
     if ([ADJPackageBuilder isAdServicesPackage:sdkClickPackage]) {
         // refresh token
         NSString *token = [[UIDevice currentDevice] adjFetchAdServicesAttribution:nil];
-
+        
         if (token != nil && ![sdkClickPackage.parameters[ADJAttributionTokenParameter] isEqualToString:token]) {
             // update token
             [ADJPackageBuilder parameters:sdkClickPackage.parameters
                                 setString:token
                                    forKey:ADJAttributionTokenParameter];
-
+            
             // update created_at
             [ADJPackageBuilder parameters:sdkClickPackage.parameters
                               setDate1970:[NSDate.date timeIntervalSince1970]
@@ -209,13 +209,13 @@ activityHandler:(id<ADJActivityHandler>)activityHandler
         return;
     }
     self.lastPackageRetriesCount = 0;
-
+    
     if ([responseData.sdkClickPackage.parameters.allValues containsObject:ADJiAdPackageKey]) {
         // received iAd click package response, clear the errors from UserDefaults
         [ADJUserDefaults cleariAdErrors];
         [self.logger info:@"Received iAd click response"];
     }
-
+    
     if ([ADJPackageBuilder isAdServicesPackage:responseData.sdkClickPackage]) {
         // set as tracked
         [ADJUserDefaults setAdServicesTracked];

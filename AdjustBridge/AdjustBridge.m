@@ -413,39 +413,39 @@
         NSString *sdkVersion = [NSString stringWithFormat:@"%@@%@", sdkPrefix, [Adjust sdkVersion]];
         responseCallback(sdkVersion);
     }];
-
+    
     [self.bridgeRegister registerHandler:@"adjust_idfa" handler:^(id data, WVJBResponseCallback responseCallback) {
         if (responseCallback == nil) {
             return;
         }
         responseCallback([Adjust idfa]);
     }];
-
+    
     [self.bridgeRegister registerHandler:@"adjust_requestTrackingAuthorizationWithCompletionHandler" handler:^(id data, WVJBResponseCallback responseCallback) {
         if (responseCallback == nil) {
             return;
         }
-
+        
         [Adjust requestTrackingAuthorizationWithCompletionHandler:^(NSUInteger status) {
             responseCallback([NSNumber numberWithUnsignedInteger:status]);
         }];
     }];
-
+    
     [self.bridgeRegister registerHandler:@"adjust_appTrackingAuthorizationStatus" handler:^(id data, WVJBResponseCallback responseCallback) {
         if (responseCallback == nil) {
             return;
         }
-
+        
         responseCallback([NSNumber numberWithInt:[Adjust appTrackingAuthorizationStatus]]);
     }];
-
+    
     [self.bridgeRegister registerHandler:@"adjust_updateConversionValue" handler:^(id data, WVJBResponseCallback responseCallback) {
         if (![data isKindOfClass:[NSNumber class]]) {
             return;
         }
         [Adjust updateConversionValue:[(NSNumber *)data integerValue]];
     }];
-
+    
     [self.bridgeRegister registerHandler:@"adjust_adid" handler:^(id data, WVJBResponseCallback responseCallback) {
         if (responseCallback == nil) {
             return;
@@ -508,14 +508,14 @@
     [self.bridgeRegister registerHandler:@"adjust_gdprForgetMe" handler:^(id data, WVJBResponseCallback responseCallback) {
         [Adjust gdprForgetMe];
     }];
-
+    
     [self.bridgeRegister registerHandler:@"adjust_trackAdRevenue" handler:^(id data, WVJBResponseCallback responseCallback) {
         NSString *source = [data objectForKey:@"source"];
         NSString *payload = [data objectForKey:@"payload"];
         NSData *dataPayload = [payload dataUsingEncoding:NSUTF8StringEncoding];
         [Adjust trackAdRevenue:source payload:dataPayload];
     }];
-
+    
     [self.bridgeRegister registerHandler:@"adjust_disableThirdPartySharing" handler:^(id data, WVJBResponseCallback responseCallback) {
         [Adjust disableThirdPartySharing];
     }];
